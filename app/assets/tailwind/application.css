@@ -1,1 +1,46 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn-primary {
+    @apply inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2;
+}
+
+
+.input-focus:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(131, 58, 180, 0.2);
+}
+
+.button-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(131, 58, 180, 0.3);
+}
+
+.gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.glass-effect {
+    background: rgb(250, 248, 248);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
