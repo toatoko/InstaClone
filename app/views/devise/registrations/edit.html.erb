@@ -14,8 +14,8 @@
           <form class="mt-8 space-y-6"><br>                    
             <div class="rounded-md shadow-sm -space-y-px">
               <div class="flex items-center gap-6">
-                <% if current_user.avatar.attached? %> 
-                  <%= image_tag current_user.avatar, class: "rounded-full", style: "width: 200px;
+                <% if current_user.avatar.present? %> 
+                  <%= image_tag avatar_user_url, class: "rounded-full", style: "width: 200px;
                     height: 200px;
                     border-radius: 50%;
                     border: 5px solid rgba(192, 200, 35, 0.8);
@@ -23,7 +23,8 @@
                     object-fit: cover;
                     margin-bottom: 1.5rem;
                     transition: var(--transition);
-                    background: var(--bg-white);" %>
+                    background: var(--bg-white);
+                    " %>
                 <% end %>
 
                 <div class="w-full">
@@ -42,11 +43,15 @@
                 class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
               </div><br>
               <div>
+                <%= f.label :username, class:"sr-only"  %>
+                <%= f.text_field :username, placeholder:"Username" ,
+                class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
+              </div>
+              <div>
                 <%= f.label :email, class:"sr-only"  %>
                 <%= f.email_field :email, autocomplete: "email", placeholder:"Email address" ,
-                class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
+                class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
               </div><br>
-
               <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
                 <div class="text-center text-sm text-white/80 py-2">Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
               <% end %>
