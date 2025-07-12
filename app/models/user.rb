@@ -5,7 +5,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, authentication_keys: [ :login ]
   attr_writer :login
-  mount_uploader :avatar, ImageUploader
+  has_one_attached :avatar
+
   validates :username, uniqueness: { case_sensitive: false }
   has_many :posts
 

@@ -1,11 +1,11 @@
 <%# layouts/_notification.html.erb %>
 <% if current_user %>
   <% cache ["notification_v2", current_user.id] do %>
-    <div class="relative" x-data="{ open: false }" class="relative">
+    <div class="relative" data-controller="dropdown">
       <!-- Notification trigger -->
       <a class="me-4 flex items-center text-neutral-600 dark:text-white" 
          href="#" 
-         @click="open = !open">
+         data-action="click->dropdown#toggle">
         <span class="[&>svg]:w-8">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path fill-rule="evenodd" d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9a2.25 2.25 0 104.496 0 25.057 25.057 0 01-4.496 0z" clip-rule="evenodd" />
@@ -16,10 +16,8 @@
       </a>
       
       <!-- Notification dropdown menu -->
-      <ul x-show="open"
-            @click.away="open = false"
-            class="absolute right-0 z-50 mt-2 w-48 rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800"
-            x-transition>
+      <ul data-dropdown-target="menu"
+            class="absolute right-0 z-50 mt-2 w-48 rounded-md bg-white py-1 text-sm shadow-lg dark:bg-neutral-800 hidden">
         <li>
           <%= link_to "Action", "#", 
               class: "block w-full whitespace-nowrap bg-white px-4 py-2 text font-normal text-neutral-700 hover:bg-zinc-200/60 focus:bg-zinc-200/60 focus:outline-none active:bg-zinc-200/60 active:no-underline dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:active:bg-neutral-700" %>

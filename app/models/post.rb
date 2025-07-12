@@ -1,9 +1,8 @@
 class Post < ApplicationRecord
-  mount_uploader :image, ImageUploader
   belongs_to :user
   before_create :set_active
   scope :active, -> { where active: true }
-
+  has_one_attached :image
 
   def set_active
     self.active = true

@@ -1,15 +1,14 @@
-<%# users/index.html.erb (Dashboard) %>
 <div class="max-w-2xl mx-auto">
   <% if @posts.any? %>
     <% @posts.each do |post| %>
       <% cache ["post_card", post, post.user, current_user&.id] do %>
         <div class="max-w-md mx-auto bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden my-6 border border-gray-200 dark:border-gray-700">
+
           <!-- Header: avatar, user info, options button -->
           <div class="flex items-center px-4 py-3 space-x-3">
             <%= link_to profile_path(post.user), class: "flex items-center space-x-3" do %>
-              <% avatar_url = @preloaded_urls[:avatars][post.user.id] %>
-              <% if avatar_url %>
-                <%= image_tag avatar_url, 
+              <% if post.user.avatar.attached? %>
+                <%= image_tag post.user.avatar.variant(resize_to_fill: [40, 40]), 
                     alt: "#{post.user.username}'s avatar", 
                     class: "h-10 w-10 rounded-full object-cover border-2 border-gray-200", 
                     loading: "lazy" %>
@@ -22,7 +21,7 @@
                 </div>
               <% end %>
             <% end %>
-            
+
             <div class="flex-1">
               <%= link_to profile_path(post.user) do %>
                 <p class="text-sm font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -33,16 +32,20 @@
                 <%= time_ago_in_words(post.created_at) %> ago
               </p>
             </div>
-            
+
             <%= render partial: "users/post_buttons", locals: { post: post } %>
           </div>
 
           <!-- Post image -->
           <div class="relative">
-            <%= image_tag @preloaded_urls[:post_images][post.id], 
-                alt: "Post by #{post.user.username}", 
-                class: "w-full object-cover max-h-[500px]",
-                loading: "lazy" %>
+            <% if post.image.attached? %>
+              <%= image_tag post.image.variant(resize_to_limit: [800, 500]), 
+                  alt: "Post by #{post.user.username}", 
+                  class: "w-full object-cover max-h-[500px]", 
+                  loading: "lazy" %>
+            <% else %>
+              <p class="text-center text-gray-400 py-6">No image available</p>
+            <% end %>
           </div>
 
           <!-- Actions: like, comment, share -->
