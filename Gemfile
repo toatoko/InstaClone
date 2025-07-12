@@ -62,6 +62,8 @@ group :development do
   gem "spring-watcher-listen"
   # local env vars
   gem "figaro"
+  gem "rack-mini-profiler"
+  gem "bullet"
 end
 
 group :test do
@@ -73,3 +75,4 @@ end
 gem "carrierwave"
 gem "fog-aws"
 gem "mini_magick"
+gem 'kaminari'

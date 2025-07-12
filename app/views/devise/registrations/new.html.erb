@@ -30,7 +30,11 @@
                 <%= f.text_field :last_name, placeholder:"Last Name" ,
                 class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
               </div>
-
+              <div>
+                <%= f.label :username, class:"sr-only" %>
+                <%= f.text_field :username, placeholder:"Username" ,
+                class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
+              </div>
               <div>
                 <%= f.label :email, class:"sr-only" %>
                 <%= f.email_field :email, autocomplete: "email", placeholder:"Email address" ,
