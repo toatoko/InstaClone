@@ -25,7 +25,7 @@ class ImageUploader < CarrierWave::Uploader::Base
 
   # Add an allowlist of extensions which are allowed to be uploaded.
   def extension_allowlist
-    %w[jpg jpeg gif png webp]
+    %w[jpg jpeg gif png webp avif]
   end
 
   # Provide a default URL if no file uploaded
