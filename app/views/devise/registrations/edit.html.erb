@@ -15,7 +15,7 @@
             <div class="rounded-md shadow-sm -space-y-px">
               <div class="flex items-center gap-6">
                 <% if current_user.avatar.present? %> 
-                  <%= image_tag avatar_user_url, class: "rounded-full", style: "width: 200px;
+                  <%= image_tag current_user.avatar_url, class: "rounded-full", style: "width: 200px;
                     height: 200px;
                     border-radius: 50%;
                     border: 5px solid rgba(192, 200, 35, 0.8);
