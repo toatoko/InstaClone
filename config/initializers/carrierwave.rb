@@ -10,4 +10,6 @@ CarrierWave.configure do |config|
   config.fog_directory  = ENV["FOG_DIRECTORY"]
   config.cache_dir      = "#{Rails.root}/tmp/uploads"
   config.storage        = :fog
+
+  config.fog_attributes = {}
 end
