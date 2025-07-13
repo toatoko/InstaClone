@@ -27,4 +27,15 @@ class User < ApplicationRecord
     # checking the value with this line by lowercase
     where(conditions).find_by([ "lower(username) = :value OR lower(email) = :value", { value: login.downcase } ])
   end
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+  def total_followers
+    0
+  end
+
+  def total_followings
+    0
+  end
 end
