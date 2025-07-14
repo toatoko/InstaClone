@@ -4,7 +4,15 @@ Rails.application.routes.draw do
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get "/dashboard", to: "users#index"
-  get "/profile", to: "users#profile"
+  # Current user's profile
+  get "/profile", to: "users#profile", as: :profile
+
+  # Other users' profiles
+  get "/users/:username", to: "users#show", as: :user_profile
+
+  # Follow/unfollow routes
+  post "/users/:username/follow", to: "users#follow", as: :user_follows
+  delete "/users/:username/unfollow", to: "users#unfollow", as: :user_unfollows
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

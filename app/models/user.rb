@@ -6,10 +6,19 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, authentication_keys: [ :login ]
   attr_writer :login
   has_one_attached :avatar
-
   validates :username, uniqueness: { case_sensitive: false }
-  has_many :posts
-
+  has_many :posts, dependent: :destroy
+  has_many :stories, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :likes, dependent: :destroy
+  has_many :active_relationships, class_name: "Relationship",
+                                  foreign_key: "follower_id",
+                                  dependent: :destroy
+  has_many :passive_relationships, class_name: "Relationship",
+                                   foreign_key: "followed_id",
+                                   dependent: :destroy
+  has_many :following, through: :active_relationships, source: :followed
+  has_many :followers, through: :passive_relationships, source: :follower
 
 
 
@@ -27,15 +36,27 @@ class User < ApplicationRecord
     # checking the value with this line by lowercase
     where(conditions).find_by([ "lower(username) = :value OR lower(email) = :value", { value: login.downcase } ])
   end
-  def full_name
-    "#{first_name} #{last_name}"
+  def follow(other_user)
+    following << other_user unless following?(other_user)
   end
 
-  def total_followers
-    0
+  def unfollow(other_user)
+    following.delete(other_user)
   end
 
-  def total_followings
-    0
+  def following?(other_user)
+    following.include?(other_user)
+  end
+
+  def posts_count
+    posts.count
+  end
+
+  def followers_count
+    followers.count
+  end
+
+  def following_count
+    following.count
   end
 end
