@@ -19,10 +19,9 @@
             <% if current_user == @user %>
               <%= link_to "Edit profile", edit_user_registration_path(@user), 
                           class: "px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded transition-colors" %>
-              <% else %>
-              <%= link_to "Follow", user_follows_path(@user), method: :post, 
-                          class: "px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded transition-colors" %>
-              <% end %>
+            <% else %>
+              <%= render "users/follow_button" %>
+            <% end %>
             
             <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
               <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

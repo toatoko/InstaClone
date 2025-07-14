@@ -1,0 +1,17 @@
+<% if current_user.present? && current_user != @user %>
+  <% if @is_following %>
+    <%= form_with url: user_unfollows_path(@user), method: :delete, class: "inline" do %>
+      <button type="submit"
+        class="px-4 py-1.5 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-medium rounded transition-colors">
+        Unfollow
+      </button>
+    <% end %>
+  <% else %>
+    <%= form_with url: user_follows_path(@user), method: :post, class: "inline" do %>
+      <button type="submit"
+        class="px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded transition-colors">
+        Follow
+      </button>
+    <% end %>
+  <% end %>
+<% end %>

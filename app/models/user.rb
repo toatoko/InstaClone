@@ -59,4 +59,7 @@ class User < ApplicationRecord
   def following_count
     following.count
   end
+  def to_param
+    username
+  end
 end

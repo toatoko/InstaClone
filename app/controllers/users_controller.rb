@@ -20,6 +20,7 @@ class UsersController < ApplicationController
     @posts = @user.posts.includes(:image_attachment)
                   .where(active: true)
                   .order(created_at: :desc)
+    @is_following = current_user.present? && current_user != @user && current_user.following.exists?(id: @user.id)
   end
 
   def show
@@ -27,6 +28,7 @@ class UsersController < ApplicationController
     @posts = @user.posts.includes(:image_attachment)
                   .where(active: true)
                   .order(created_at: :desc)
+    @is_following = current_user.present? && current_user != @user && current_user.following.exists?(id: @user.id)
     render :profile
   end
 
