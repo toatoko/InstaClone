@@ -68,7 +68,7 @@
   <div class="max-w-4xl mx-auto px-4">
     <div class="flex justify-center">
       <div class="flex">
-        <%= link_to user_profile_link(@user), 
+        <%= link_to profile_path(@user), 
                     class: "flex items-center gap-2 px-4 py-3 #{'border-t-2 border-gray-900 dark:border-white text-gray-900 dark:text-white' if params[:tab].blank?} #{'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' if params[:tab].present?} text-sm font-medium" do %>
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM11 7h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zM7 7h2v2H7V7zm0 4h2v2H7v-2zm0 4h2v2H7v-2zm8-8h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z"/>

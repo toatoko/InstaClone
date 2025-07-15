@@ -1,14 +1,13 @@
 Rails.application.routes.draw do
   resources :posts
+  resources :rooms, only: [ :index, :show ]
   get "pages/home"
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   get "/dashboard", to: "users#index"
-  # Current user's profile
-  get "/profile", to: "users#profile", as: :profile
-
-  # Other users' profiles
-  get "/users/:username", to: "users#show", as: :user_profile
+  # users profile
+  # Replace your current profile routes with:
+  get "/profile(/:username)", to: "users#profile", as: :profile
 
   # Follow/unfollow routes
   post "/users/:username/follow", to: "users#follow", as: :user_follows

@@ -7,8 +7,9 @@ class User < ApplicationRecord
   attr_writer :login
   has_one_attached :avatar
   validates :username, uniqueness: { case_sensitive: false }
+  validates :avatar, presence: true
+
   has_many :posts, dependent: :destroy
-  has_many :stories, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :active_relationships, class_name: "Relationship",
@@ -19,7 +20,8 @@ class User < ApplicationRecord
                                    dependent: :destroy
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
-
+  scope :all_except, ->(user) { where.not(id: user) }
+  after_create_commit { broadcast_append_to "users" }
 
 
   # to use email or username at login page

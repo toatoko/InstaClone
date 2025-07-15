@@ -1,0 +1,7 @@
+<!-- app/views/users/_user.html.erb -->
+<div class="flex items-center gap-2">
+  <% if user.avatar.attached? %>
+    <%= image_tag user.avatar, class: "w-8 h-8 rounded-full object-cover" %>
+  <% end %>
+  <%= link_to user.username, profile_path(user), class: "text-blue-500 hover:underline" %>
+</div>

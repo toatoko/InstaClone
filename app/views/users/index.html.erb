@@ -7,7 +7,7 @@
           <div class="w-full overflow-hidden my-6 px-2">
             <!-- Header: avatar, user info, options button -->
             <div class="flex items-center px-1 py-3 space-x-3">
-              <%= link_to user_profile_link(post.user), class: "flex items-center space-x-3" do %>
+              <%= link_to profile_path(post.user), class: "flex items-center space-x-3" do %>
                 <% if post.user.avatar.attached? %>
                   <%= image_tag post.user.avatar.variant(resize_to_fill: [40, 40]), 
                       alt: "#{post.user.username}'s avatar", 
@@ -24,7 +24,7 @@
               <% end %>
 
               <div class="flex-1">
-                <%= link_to user_profile_link(post.user) do %>
+                <%= link_to profile_path(post.user) do %>
                   <p class="text-sm font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     <%= post.user.username %>
                   </p>
@@ -74,6 +74,13 @@
                 </svg>
               </button>
             </div>
+              <div>
+                <span class="font-semibold"><%= pluralize(post.likes_count, "like")%></span><br>
+                <%= link_to "#{post.user.username}", profile_path(post.user), class: "font-bold" %> 
+                <% if post.description? %>
+                  <%= post.description %>
+                <% end %>
+              </div>
             <div class="border-t border-gray-500 my-1 dark:border-gray-500"></div>
           </div>
         <% end %>

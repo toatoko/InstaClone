@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!, except: [ :show ]
   before_action :set_user, only: [ :show, :follow, :unfollow ]
-  before_action :set_current_user, only: [ :profile ]
 
   def index
     @user = User.includes(:avatar_attachment)
@@ -16,7 +15,15 @@ class UsersController < ApplicationController
   end
 
   def profile
-    # Use includes instead of joins to properly load attachments
+    if params[:username].present? && params[:username] != current_user.username
+      # If username is provided and it's not the current user, find that user
+      @user = User.find_by(username: params[:username])
+      redirect_to root_path, alert: "User not found" unless @user
+    else
+      # If no username or it's the current user's username, show current user's profile
+      @user = current_user
+    end
+
     @posts = @user.posts.includes(:image_attachment)
                   .where(active: true)
                   .order(created_at: :desc)
@@ -47,10 +54,6 @@ class UsersController < ApplicationController
   def set_user
     @user = User.find_by(username: params[:username])
     redirect_to root_path, alert: "User not found" unless @user
-  end
-
-  def set_current_user
-    @user = current_user
   end
 
   def user_params

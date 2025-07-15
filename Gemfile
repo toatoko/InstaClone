@@ -74,3 +74,4 @@ end
 
 gem "kaminari"
 gem "rmagick"
+gem 'redis'
