@@ -20,14 +20,16 @@ class User < ApplicationRecord
                                    dependent: :destroy
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
-  scope :all_except, ->(user) { where.not(id: user) }
-  after_create_commit { broadcast_append_to "users" }
 
+  # Message associations
+  has_many :sent_messages, class_name: "Message", foreign_key: "sender_id", dependent: :destroy
+  has_many :received_messages, class_name: "Message", foreign_key: "receiver_id", dependent: :destroy
 
   # to use email or username at login page
   def login
     @login || username || email
   end
+
   # to be able to login with username or email
   # warden_condition is the bag of devise to go and grab the key we want from db(email or username)
   def self.find_for_database_authentication(warden_conditions)
@@ -38,6 +40,7 @@ class User < ApplicationRecord
     # checking the value with this line by lowercase
     where(conditions).find_by([ "lower(username) = :value OR lower(email) = :value", { value: login.downcase } ])
   end
+
   def follow(other_user)
     following << other_user unless following?(other_user)
   end
@@ -61,7 +64,34 @@ class User < ApplicationRecord
   def following_count
     following.count
   end
+
   def to_param
     username
+  end
+
+  # Message-related methods
+  def conversations
+    # Get all users this user has had conversations with
+    sent_to_ids = sent_messages.distinct.pluck(:receiver_id)
+    received_from_ids = received_messages.distinct.pluck(:sender_id)
+    user_ids = (sent_to_ids + received_from_ids).uniq
+    
+    User.where(id: user_ids)
+  end
+
+  def conversation_with(other_user)
+    Message.between_users(self, other_user)
+  end
+
+  def unread_messages_count
+    received_messages.unread.count
+  end
+
+  def unread_messages_from(other_user)
+    received_messages.where(sender: other_user).unread.count
+  end
+
+  def last_message_with(other_user)
+    conversation_with(other_user).last
   end
 end
