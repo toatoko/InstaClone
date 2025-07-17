@@ -7,7 +7,8 @@ Rails.application.routes.draw do
   # users profile
   # Replace your current profile routes with:
   get "/profile(/:username)", to: "users#profile", as: :profile
-
+  get "/users/:username", to: "users#show", as: :user_profile
+  get "/suggested_followers", to: "users#all_users"
   # Follow/unfollow routes
   post "/users/:username/follow", to: "users#follow", as: :user_follows
   delete "/users/:username/unfollow", to: "users#unfollow", as: :user_unfollows

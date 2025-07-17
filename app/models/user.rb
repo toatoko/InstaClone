@@ -24,7 +24,7 @@ class User < ApplicationRecord
   # Message associations
   has_many :sent_messages, class_name: "Message", foreign_key: "sender_id", dependent: :destroy
   has_many :received_messages, class_name: "Message", foreign_key: "receiver_id", dependent: :destroy
-
+  scope :all_except, ->(user) { where.not(id: user.id) }
   # to use email or username at login page
   def login
     @login || username || email
@@ -54,15 +54,30 @@ class User < ApplicationRecord
   end
 
   def posts_count
-    posts.count
+    # Use counter cache if available, otherwise fall back to count
+    if has_attribute?(:posts_count)
+      read_attribute(:posts_count) || 0
+    else
+      posts.count
+    end
   end
 
   def followers_count
-    followers.count
+    # Use counter cache if available, otherwise fall back to count
+    if has_attribute?(:followers_count)
+      read_attribute(:followers_count) || 0
+    else
+      followers.count
+    end
   end
 
   def following_count
-    following.count
+    # Use counter cache if available, otherwise fall back to count
+    if has_attribute?(:following_count)
+      read_attribute(:following_count) || 0
+    else
+      following.count
+    end
   end
 
   def to_param

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_16_151623) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_17_191342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,6 +85,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_151623) do
     t.integer "comments_count", default: 0, null: false
     t.integer "likes_count", default: 0, null: false
     t.text "description"
+    t.index ["comments_count"], name: "index_posts_on_comments_count"
+    t.index ["likes_count"], name: "index_posts_on_likes_count"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -115,7 +117,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_16_151623) do
     t.string "username", limit: 15
     t.string "first_name", limit: 20
     t.string "last_name", limit: 20
+    t.text "bio"
+    t.integer "posts_count", default: 0, null: false
+    t.integer "followers_count", default: 0, null: false
+    t.integer "following_count", default: 0, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["followers_count"], name: "index_users_on_followers_count"
+    t.index ["following_count"], name: "index_users_on_following_count"
+    t.index ["posts_count"], name: "index_users_on_posts_count"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end

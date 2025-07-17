@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, except: [ :show ]
+  before_action :authenticate_user!, except: [ :show, :profile ]
   before_action :set_user, only: [ :show, :follow, :unfollow ]
 
   def index
@@ -8,6 +8,7 @@ class UsersController < ApplicationController
                  .where(active: true)
                  .order(created_at: :desc)
                  .page(params[:page]).per(12)
+    @suggested_users = User.all_except(current_user).includes(:avatar_attachment).limit(4)
     respond_to do |format|
       format.html
       format.json { render json: { posts: render_posts_json(@posts), has_more: @posts.next_page.present? } }
@@ -15,12 +16,15 @@ class UsersController < ApplicationController
   end
 
   def profile
-    if params[:username].present? && params[:username] != current_user.username
-      # If username is provided and it's not the current user, find that user
+    if params[:username].present?
+      # If username is provided, find that user
       @user = User.find_by(username: params[:username])
-      redirect_to root_path, alert: "User not found" unless @user
+      unless @user
+        redirect_to root_path, alert: "User not found"
+        return
+      end
     else
-      # If no username or it's the current user's username, show current user's profile
+      # If no username, show current user's profile
       @user = current_user
     end
 
@@ -31,7 +35,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    # Use includes instead of joins to properly load attachments
+    # This method uses set_user callback, so @user is already set
     @posts = @user.posts.includes(:image_attachment)
                   .where(active: true)
                   .order(created_at: :desc)
@@ -39,21 +43,59 @@ class UsersController < ApplicationController
     render :profile
   end
 
+  def all_users
+    @users = User.includes(:avatar_attachment).all_except(current_user)
+  end
+
   def follow
     current_user.follow(@user)
-    redirect_back(fallback_location: user_profile_path(@user.username))
+    respond_to do |format|
+      format.turbo_stream do
+        # Check if we're on the all_users page
+        if request.referer&.include?('suggested_followers')
+          render turbo_stream: turbo_stream.replace("follow_button_#{@user.id}",
+            partial: "users/follow_button_all_users",
+            locals: { user: @user },
+            formats: [:html])
+        else
+          render turbo_stream: turbo_stream.replace("user_#{@user.id}", 
+            partial: "users/suggested_user", 
+            locals: { user: @user },
+            formats: [:html])
+        end
+      end
+      format.html { redirect_back fallback_location: profile_path(@user.username) }
+    end
   end
 
   def unfollow
     current_user.unfollow(@user)
-    redirect_back(fallback_location: user_profile_path(@user.username))
+    respond_to do |format|
+      format.turbo_stream do
+        # Check if we're on the all_users page
+        if request.referer&.include?('suggested_followers')
+          render turbo_stream: turbo_stream.replace("follow_button_#{@user.id}",
+            partial: "users/follow_button_all_users",
+            locals: { user: @user },
+            formats: [:html])
+        else
+          render turbo_stream: turbo_stream.replace("user_#{@user.id}", 
+            partial: "users/suggested_user", 
+            locals: { user: @user },
+            formats: [:html])
+        end
+      end
+      format.html { redirect_back fallback_location: profile_path(@user.username) }
+    end
   end
 
   private
 
   def set_user
     @user = User.find_by(username: params[:username])
-    redirect_to root_path, alert: "User not found" unless @user
+    unless @user
+      redirect_to root_path, alert: "User not found"
+    end
   end
 
   def user_params
