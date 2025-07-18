@@ -1,6 +1,6 @@
 <!-- app/views/users/_suggested_user.html.erb -->
 <%= turbo_frame_tag "user_#{user.id}" do %>
-  <div class="flex items-center justify-between w-full">
+  <div class="flex items-center justify-between w-full mt-3">
     <!-- Left: Avatar + Name -->
     <div class="flex items-center space-x-3">
       <% if user.avatar.attached? %>

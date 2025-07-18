@@ -29,7 +29,10 @@ class Post < ApplicationRecord
       likes.count
     end
   end
-
+  
+  def preview_comments(limit = 2)
+    comments.includes(:user).recent.limit(limit)
+  end
   def comments_count
     # Use counter cache if available, otherwise fall back to count
     if has_attribute?(:comments_count)

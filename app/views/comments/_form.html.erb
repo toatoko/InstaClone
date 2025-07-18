@@ -1,0 +1,32 @@
+<%= form_with(model: [post, comment], local: true, data: { turbo: true }, 
+              class: 'w-full') do |form| %>
+  <% if comment.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-md p-2 mb-2">
+      <div class="text-red-800 text-xs">
+        <% comment.errors.full_messages.each do |message| %>
+          <p><%= message %></p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="flex items-center space-x-2 border-t border-gray-200 pt-3">
+    <% if current_user&.avatar&.attached? %>
+      <%= image_tag current_user.avatar.variant(resize_to_fill: [32, 32]), 
+          class: "w-8 h-8 rounded-full object-cover flex-shrink-0" %>
+    <% else %>
+      <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+        <span class="text-gray-600 font-medium text-sm"><%= current_user&.username&.first&.upcase %></span>
+      </div>
+    <% end %>
+    
+    <div class="flex-1 flex items-center space-x-2">
+      <%= form.text_field :content, placeholder: 'Add a comment...', 
+          class: 'flex-1 px-3 py-2 text-sm border-0 focus:outline-none focus:ring-0 placeholder-gray-400',
+          autocomplete: 'off' %>
+      
+      <%= form.submit 'Post', 
+          class: 'text-blue-500 hover:text-blue-600 font-semibold text-sm px-2 py-1 transition-colors' %>
+    </div>
+  </div>
+<% end %>

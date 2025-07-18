@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-   
+    <%= turbo_include_tags %>
     <%= javascript_importmap_tags %>
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
@@ -45,4 +45,25 @@
       <%= yield %>
     </main>
   </body>
+  <script>
+    function copyPostLink(button) {
+      const link = button.dataset.copyLink;
+      const tooltip = button.parentElement.querySelector('[id^="tooltip-for"]');
+
+      navigator.clipboard.writeText(link).then(() => {
+        // Show tooltip
+        tooltip.style.opacity = "1";
+
+        // Hide tooltip after 1.5s
+        setTimeout(() => {
+          tooltip.style.opacity = "0";
+        }, 1500);
+      }).catch(() => {
+        alert("Failed to copy link.");
+      });
+    }
+  </script>
+
+
+
 </html>

@@ -1,13 +1,18 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!, except: %i[show]
+  before_action :set_post, only: %i[ show edit update destroy toggle_like]
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.where(active: true).order(created_at: :desc)
+    @posts = Post.includes(:user, :comments, :likes)
+                 .where(active: true)
+                 .order(created_at: :desc)
   end
 
   # GET /posts/1 or /posts/1.json
   def show
+    @comments = @post.comments.includes(:user).recent
+    @comment = Comment.new if user_signed_in?
   end
 
   # GET /posts/new
@@ -54,6 +59,30 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to posts_path, status: :see_other, notice: "Post was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+  def toggle_like
+    @like = @post.likes.find_by(user: current_user)
+    if @like
+      @like.destroy
+      @liked = false
+    else
+      @like = @post.likes.create(user: current_user)
+      @liked = true
+    end
+    @post.reload
+    respond_to do |format|
+      format.turbo_stream {
+        render turbo_stream: [
+          turbo_stream.replace("like_button_#{@post.id}", 
+                               partial: 'posts/like_button', 
+                               locals: { post: @post }),
+          turbo_stream.replace("likes_count_#{@post.id}", 
+                               partial: 'posts/likes_count', 
+                               locals: { post: @post })
+        ]
+      }
+      format.html { redirect_back(fallback_location: root_path) }
     end
   end
 

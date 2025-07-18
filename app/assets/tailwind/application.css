@@ -44,3 +44,23 @@
         transform: translateY(-10px);
     }
 }
+
+@layer components {
+    .like-animation {
+        animation: heartBeat 0.3s ease-in-out;
+    }
+
+    @keyframes heartBeat {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+}
