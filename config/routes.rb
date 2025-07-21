@@ -1,4 +1,27 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    # Root route for admin (goes to Admin::AdminController#dashboard)
+    root to: "admin#dashboard"
+    
+    # Main admin controller routes (Admin::AdminController)
+    get 'dashboard', to: 'admin#dashboard'
+    get 'posts', to: 'admin#posts'          # Overview of posts
+    get 'comments', to: 'admin#comments'    # Overview of comments
+    
+    # Users management (Admin::UsersController)
+    resources :users, param: :username do
+      member do
+        patch :toggle_admin  # PATCH request to toggle admin status
+      end
+    end
+    # Reports managmetn
+    resources :reports, only: [:index, :show, :update]
+    # Posts management (Admin::PostsController) 
+    resources :posts, only: [:index, :show, :edit, :update, :destroy]
+    
+    # Comments management 
+    resources :comments, only: [:index, :show, :destroy]
+  end
   resources :posts do
     resources :comments, only: [:create, :destroy]
     member do
@@ -23,6 +46,7 @@ Rails.application.routes.draw do
       patch :mark_as_read
     end
   end
+  resources :reports, only: [:create]
   # Conversations with specific users
   get 'messages/:username', to: 'messages#show', as: 'conversation'
   post 'messages/:username', to: 'messages#create'

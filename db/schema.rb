@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_17_191342) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_21_211222) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -100,6 +100,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_191342) do
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.bigint "reporter_id", null: false
+    t.string "reportable_type", null: false
+    t.bigint "reportable_id", null: false
+    t.text "reason"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable"
+    t.index ["reporter_id"], name: "index_reports_on_reporter_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -121,6 +133,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_191342) do
     t.integer "posts_count", default: 0, null: false
     t.integer "followers_count", default: 0, null: false
     t.integer "following_count", default: 0, null: false
+    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["followers_count"], name: "index_users_on_followers_count"
     t.index ["following_count"], name: "index_users_on_following_count"
@@ -139,4 +152,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_191342) do
   add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "relationships", "users", column: "followed_id"
   add_foreign_key "relationships", "users", column: "follower_id"
+  add_foreign_key "reports", "users", column: "reporter_id"
 end

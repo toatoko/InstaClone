@@ -1,0 +1,36 @@
+<h1>Reports</h1>
+
+<table class="w-full text-left">
+  <thead>
+    <tr>
+      <th>Report ID</th>
+      <th>Reportable</th>
+      <th>Reported By</th>
+      <th>Reason</th>
+      <th>Status</th>
+      <th>Submitted At</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @reports.each do |report| %>
+      <tr class="border-t">
+        <td><%= report.id %></td>
+        <td>
+          <% if report.reportable %>
+            <%= link_to "#{report.reportable_type} ##{report.reportable.id}", polymorphic_path([:admin, report.reportable]) rescue report.reportable.id %>
+          <% else %>
+            (Deleted)
+          <% end %>
+        </td>
+        <td><%= report.reporter.username %></td>
+        <td><%= truncate(report.reason, length: 50) %></td>
+        <td><%= report.status.capitalize %></td>
+        <td><%= report.created_at.strftime("%b %d, %Y %H:%M") %></td>
+        <td><%= link_to "View", admin_report_path(report) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @reports %>

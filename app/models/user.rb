@@ -24,7 +24,24 @@ class User < ApplicationRecord
   # Message associations
   has_many :sent_messages, class_name: "Message", foreign_key: "sender_id", dependent: :destroy
   has_many :received_messages, class_name: "Message", foreign_key: "receiver_id", dependent: :destroy
+  #Report associations
+  has_many :reports, as: :reportable, dependent: :destroy
+  has_many :submitted_reports, class_name: "Report", foreign_key: "reporter_id", dependent: :destroy
+
   scope :all_except, ->(user) { where.not(id: user.id) }
+  
+  def admin?
+    admin == true
+  end
+   # Method to make a user admin
+  def make_admin!
+    update!(admin: true)
+  end
+
+  # Method to remove admin privileges
+  def remove_admin!
+    update!(admin: false)
+  end
   # to use email or username at login page
   def login
     @login || username || email

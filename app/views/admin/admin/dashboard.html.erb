@@ -1,0 +1,153 @@
+<% content_for :title, "Admin Dashboard" %>
+<%= render layout: "layouts/admin" do %>
+  <div class="px-4 py-6 sm:px-0">
+    <div class="border-4 border-dashed border-gray-200 dark:border-gray-700 rounded-lg p-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Admin Dashboard</h1>
+      
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+        <!-- Users Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Users</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @users_count || 0 %></p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
+            <%= link_to "View Users", admin_users_path, class: "text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500" %>
+          </div>
+        </div>
+
+        <!-- Posts Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Posts</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @posts_count || 0 %></p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
+            <%= link_to "View Posts", admin_posts_path, class: "text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-500" %>
+          </div>
+        </div>
+
+        <!-- Comments Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Comments</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @comments_count || 0 %></p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
+            <%= link_to "View Comments", admin_comments_path, class: "text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Users -->
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Users</h3>
+          </div>
+          <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% if @recent_users&.any? %>
+              <% @recent_users.each do |user| %>
+                <div class="px-6 py-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <% if user.avatar.attached? %>
+                        <%= image_tag user.avatar, class: "w-8 h-8 rounded-full object-cover" %>
+                      <% else %>
+                        <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                          <span class="text-xs text-gray-600 dark:text-gray-300"><%= user.username.first.upcase %></span>
+                        </div>
+                      <% end %>
+                      <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white"><%= user.username %></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400"><%= time_ago_in_words(user.created_at) %> ago</p>
+                      </div>
+                    </div>
+                    <% if user.admin? %>
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200">Admin</span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="px-6 py-8 text-center">
+                <p class="text-gray-500 dark:text-gray-400">No users found</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Recent Posts -->
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Posts</h3>
+          </div>
+          <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% if @recent_posts&.any? %>
+              <% @recent_posts.each do |post| %>
+                <div class="px-6 py-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                      <% if post.image.attached? %>
+                        <%= image_tag post.image, class: "w-8 h-8 rounded object-cover" %>
+                      <% else %>
+                        <div class="w-8 h-8 rounded bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                          <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                          </svg>
+                        </div>
+                      <% end %>
+                      <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">By <%= post.user.username %></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400"><%= time_ago_in_words(post.created_at) %> ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="px-6 py-8 text-center">
+                <p class="text-gray-500 dark:text-gray-400">No posts found</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -37,13 +37,13 @@
     <!-- Right: Follow/Unfollow Button -->
     <% if current_user && current_user != user %>
       <% if current_user.following?(user) %>
-        <%= button_to user_unfollows_path(user.username), method: :delete,
+        <%= link_to user_unfollows_path(user.username), 'data-turbo-method': :delete,
             data: { turbo: true },
             class: "text-xs px-3 py-1 text-black dark:text-white rounded-full shadow-sm" do %>
           Unfollow
         <% end %>
       <% else %>
-        <%= button_to user_follows_path(user.username), method: :post,
+        <%= link_to user_follows_path(user.username), 'data-turbo-method': :post,
             data: { turbo: true },
             class: "text-xs px-3 py-1 text-black dark:text-white rounded-full shadow-sm" do %>
           Follow
