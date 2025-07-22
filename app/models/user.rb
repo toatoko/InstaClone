@@ -24,16 +24,16 @@ class User < ApplicationRecord
   # Message associations
   has_many :sent_messages, class_name: "Message", foreign_key: "sender_id", dependent: :destroy
   has_many :received_messages, class_name: "Message", foreign_key: "receiver_id", dependent: :destroy
-  #Report associations
-  has_many :reports, as: :reportable, dependent: :destroy
+  # Report associations
+  has_many :reports_about_me, as: :reportable, class_name: "Report", dependent: :destroy
   has_many :submitted_reports, class_name: "Report", foreign_key: "reporter_id", dependent: :destroy
-
+  has_many :resolved_reports, class_name: "Report", foreign_key: "resolved_by_id", dependent: :nullify
   scope :all_except, ->(user) { where.not(id: user.id) }
-  
+
   def admin?
     admin == true
   end
-   # Method to make a user admin
+  # Method to make a user admin
   def make_admin!
     update!(admin: true)
   end
@@ -107,7 +107,7 @@ class User < ApplicationRecord
     sent_to_ids = sent_messages.distinct.pluck(:receiver_id)
     received_from_ids = received_messages.distinct.pluck(:sender_id)
     user_ids = (sent_to_ids + received_from_ids).uniq
-    
+
     User.where(id: user_ids)
   end
 

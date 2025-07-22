@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_21_211222) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_153956) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -106,10 +106,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_211222) do
     t.bigint "reportable_id", null: false
     t.text "reason"
     t.string "status", default: "pending"
+    t.bigint "resolved_by_id"
+    t.datetime "resolved_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable"
     t.index ["reporter_id"], name: "index_reports_on_reporter_id"
+    t.index ["resolved_by_id"], name: "index_reports_on_resolved_by_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -153,4 +156,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_211222) do
   add_foreign_key "relationships", "users", column: "followed_id"
   add_foreign_key "relationships", "users", column: "follower_id"
   add_foreign_key "reports", "users", column: "reporter_id"
+  add_foreign_key "reports", "users", column: "resolved_by_id"
 end

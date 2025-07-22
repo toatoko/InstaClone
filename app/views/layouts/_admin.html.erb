@@ -1,43 +1,21 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-100 dark:bg-gray-900">
-  <head>
-    <title><%= content_for?(:title) ? yield(:title) : "Admin Panel" %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-  </head>
-  <body class="h-full text-gray-900 dark:text-white">
-    <!-- Admin Navbar -->
-    <header class="bg-white dark:bg-gray-800 shadow">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Admin Panel</h1>
-        <nav class="space-x-4">
-          <%= link_to "Dashboard", admin_root_path, class: "text-sm font-medium hover:underline" %>
-          <%= link_to "Users", admin_users_path, class: "text-sm font-medium hover:underline" %>
-          <%= link_to "Posts", admin_posts_path, class: "text-sm font-medium hover:underline" %>
-          <%= link_to "Comments", admin_comments_path, class: "text-sm font-medium hover:underline" %>
-          <%= link_to "Back to Site", root_path, class: "text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline" %>
-        </nav>
+<div class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Admin Panel</h1>
+    <nav class="flex items-center space-x-6 ">
+      <%= link_to "Dashboard", admin_root_path,
+          class: "text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 #{'text-blue-600 dark:text-blue-400' if current_page?(admin_root_path)}" %>
+      <%= link_to "Users", admin_users_path,
+          class: "text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 #{'text-blue-600 dark:text-blue-400' if current_page?(admin_users_path)}" %>
+      <%= link_to "Reports", admin_reports_path,
+          class: "text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 #{'text-blue-600 dark:text-blue-400' if current_page?(admin_reports_path)}" %>
+      <div class="border-l border-gray-200 dark:border-gray-700 pl-6 ml-2">
+        <%= link_to "Back to Site", root_path,
+            class: "text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-200" %>
       </div>
-    </header>
+    </nav>
+  </div>
+</div>
 
-    <!-- Flash messages -->
-    <% if flash.any? %>
-      <div class="max-w-4xl mx-auto mt-4 px-4">
-        <% flash.each do |key, value| %>
-          <div class="mb-4 p-4 rounded text-sm 
-                      <%= key == "alert" || key == "error" ? "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200" : "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200" %>">
-            <%= value %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-
-    <!-- Main Content -->
-    <main class="min-h-screen max-w-7xl mx-auto">
-      <%= yield %>
-    </main>
-  </body>
-</html>
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <%= yield %>
+</div>

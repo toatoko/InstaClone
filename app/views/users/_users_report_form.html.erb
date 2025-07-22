@@ -1,9 +1,0 @@
-<%= form_with model: [user, Report.new], url: reports_path, local: true do |f| %>
-  <%= f.hidden_field :reportable_type, value: "User" %>
-  <%= f.hidden_field :reportable_id, value: user.id %>
-  <div>
-    <%= f.label :reason, "Reason for reporting" %><br>
-    <%= f.text_area :reason, required: true, rows: 3, class: "border rounded p-2 w-full" %>
-  </div>
-  <%= f.submit "Report User", class: "mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" %>
-<% end %>

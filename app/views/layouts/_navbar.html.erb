@@ -141,6 +141,15 @@
           <% end %>
         </li>
       <% end %>
+     <% if current_user.admin? %>
+        <li>
+          <%= link_to admin_root_path, class: "flex items-center px-4 lg:px-6 py-2 lg:py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-400 transition-colors rounded-md" do %>
+            <i class="fas fa-user-shield w-5 lg:w-6 text-base lg:text-lg mr-3 lg:mr-4"></i>
+            <span class="text-sm lg:text-base">Admin</span>
+          <% end %>
+        </li>
+      <% end %>
+
     </ul>
   </div>
 

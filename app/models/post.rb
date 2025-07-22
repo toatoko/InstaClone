@@ -7,9 +7,10 @@ class Post < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
 
+  has_many :reports, as: :reportable, dependent: :destroy
+  
   validates :image, presence: true
   validates :user, presence: true
-  
   scope :active, -> { where active: true }
 
   def set_active

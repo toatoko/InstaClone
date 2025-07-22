@@ -28,47 +28,50 @@
           </div>
         </div>
 
-        <!-- Posts Card -->
+        <!-- Reports Card -->
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Reports</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @reports_count || 0 %></p>
+                <% if @pending_reports_count && @pending_reports_count > 0 %>
+                  <p class="text-xs text-red-600 dark:text-red-400"><%= @pending_reports_count %> pending</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
+            <%= link_to "View Reports", admin_reports_path, class: "text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-500" %>
+          </div>
+        </div>
+
+        <!-- System Status Card -->
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
           <div class="p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0">
                 <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                   </svg>
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Posts</p>
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @posts_count || 0 %></p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">System Status</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white">Online</p>
               </div>
             </div>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
-            <%= link_to "View Posts", admin_posts_path, class: "text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-500" %>
-          </div>
-        </div>
-
-        <!-- Comments Card -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
-          <div class="p-6">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-              </div>
-              <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Comments</p>
-                <p class="text-2xl font-semibold text-gray-900 dark:text-white"><%= @comments_count || 0 %></p>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3">
-            <%= link_to "View Comments", admin_comments_path, class: "text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500" %>
+            <span class="text-sm font-medium text-green-600 dark:text-green-400">All systems operational</span>
           </div>
         </div>
       </div>
@@ -112,37 +115,43 @@
           </div>
         </div>
 
-        <!-- Recent Posts -->
+        <!-- Recent Reports -->
         <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700">
           <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Posts</h3>
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Reports</h3>
           </div>
           <div class="divide-y divide-gray-200 dark:divide-gray-700">
-            <% if @recent_posts&.any? %>
-              <% @recent_posts.each do |post| %>
+            <% if @recent_reports&.any? %>
+              <% @recent_reports.each do |report| %>
                 <div class="px-6 py-4">
                   <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                      <% if post.image.attached? %>
-                        <%= image_tag post.image, class: "w-8 h-8 rounded object-cover" %>
-                      <% else %>
-                        <div class="w-8 h-8 rounded bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                          <svg class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
-                          </svg>
-                        </div>
-                      <% end %>
+                      <div class="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                      </div>
                       <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">By <%= post.user.username %></p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400"><%= time_ago_in_words(post.created_at) %> ago</p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white"><%= report.reportable_type %> reported</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">By <%= report.reporter.username %> • <%= time_ago_in_words(report.created_at) %> ago</p>
                       </div>
                     </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                      <% if report.status == 'pending' %>
+                        bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200
+                      <% elsif report.status == 'resolved' %>
+                        bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200
+                      <% else %>
+                        bg-gray-100 text-gray-800 dark:bg-gray-900/50 dark:text-gray-200
+                      <% end %>">
+                      <%= report.status.titleize %>
+                    </span>
                   </div>
                 </div>
               <% end %>
             <% else %>
               <div class="px-6 py-8 text-center">
-                <p class="text-gray-500 dark:text-gray-400">No posts found</p>
+                <p class="text-gray-500 dark:text-gray-400">No reports found</p>
               </div>
             <% end %>
           </div>

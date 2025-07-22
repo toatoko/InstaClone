@@ -54,12 +54,12 @@
                       Edit
                     <% end %>
                     <% unless user == current_user %>
-                      <%= link_to toggle_admin_admin_user_path(user), method: :patch, 
+                      <%= link_to toggle_admin_admin_user_path(user), 'data-turbo-method': :patch, 
                           class: "text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 text-sm font-medium",
                           confirm: "Are you sure you want to #{user.admin? ? 'remove admin access from' : 'make'} #{user.username} #{user.admin? ? '' : 'an admin'}?" do %>
                         <%= user.admin? ? "Remove Admin" : "Make Admin" %>
                       <% end %>
-                      <%= link_to admin_user_path(user), method: :delete, 
+                      <%= link_to admin_user_path(user), 'data-turbo-method': :delete, 
                           class: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium",
                           confirm: "Are you sure you want to delete #{user.username}? This action cannot be undone." do %>
                         Delete
