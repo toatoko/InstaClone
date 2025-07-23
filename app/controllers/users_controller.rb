@@ -113,7 +113,6 @@ class UsersController < ApplicationController
   end
 
   def follow
-    # Eager load to avoid N+1 when checking mutually_blocked?
     current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
 
     if current_user_with_blocks.mutually_blocked?(@user)
@@ -121,10 +120,13 @@ class UsersController < ApplicationController
       return
     end
 
-    current_user.follow(@user)
+    # FIXED: Pass the follower object instead of just username
+    if current_user.follow(@user)
+      FollowNotifier.with(follower: current_user, followed_user: @user).deliver_later(@user)
+    end
+
     respond_to do |format|
       format.turbo_stream do
-        # Check if we're on the all_users page
         if request.referer&.include?("suggested_followers")
           render turbo_stream: turbo_stream.replace("follow_button_#{@user.id}",
             partial: "users/follow_button_all_users",

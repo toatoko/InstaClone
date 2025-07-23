@@ -62,6 +62,10 @@ class PostsController < ApplicationController
     else
       @like = @post.likes.create(user: current_user)
       @liked = true
+      # Notifications
+      if @post.user != current_user
+        LikeNotifier.with(liker: current_user, post: @post).deliver_later(@post.user)
+      end
     end
     @post.reload
     respond_to do |format|

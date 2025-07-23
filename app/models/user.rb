@@ -40,6 +40,9 @@ class User < ApplicationRecord
   belongs_to :banned_by, class_name: "User", optional: true
   has_many :banned_users, class_name: "User", foreign_key: "banned_by_id"
 
+  # Notification
+  has_many :notifications, as: :recipient, dependent: :destroy
+
   # OPTIMIZED SCOPES
   scope :banned, -> { where.not(banned_at: nil) }
   scope :active, -> { where(banned_at: nil) }

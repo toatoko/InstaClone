@@ -81,7 +81,17 @@ Rails.application.routes.draw do
   end
   get "messages/:username", to: "messages#show", as: "conversation"
   post "messages/:username", to: "messages#create"
-
+  # Notifications
+  resources :notifications, only: [ :index ] do
+    member do
+      patch :mark_as_read
+    end
+    collection do
+      patch :mark_as_read  # For marking all as read
+      delete :delete_read  # Delete all read notifications
+      delete :delete_all   # Delete all notifications
+    end
+  end
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 

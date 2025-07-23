@@ -28,6 +28,20 @@
       <% end %>
     <% end %>
 
+    <% if user_signed_in? %>
+      <% unread_count = current_user.notifications.unread.count %>
+      <%= link_to notifications_path, class: "relative flex flex-col items-center p-2 text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors" do %>
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+        </svg>
+        <% if unread_count > 0 %>
+          <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+            <%= unread_count %>
+          </span>
+        <% end %>
+      <% end %>
+    <% end %>
+
     <% if current_user %>
       <%= link_to profile_path(@user), class: "flex flex-col items-center p-2 text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors" do %>
         <div class="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center overflow-hidden">
@@ -113,7 +127,7 @@
       <% end %>
 
       <li>
-          <%= link_to messages_path, class: "flex items-center px-4 lg:px-6 py-2 lg:py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-400 transition-colors rounded-md relative" do %>
+        <%= link_to messages_path, class: "flex items-center px-4 lg:px-6 py-2 lg:py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-400 transition-colors rounded-md relative" do %>
           <svg class="w-5 lg:w-6 text-base lg:text-lg mr-3 lg:mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -127,6 +141,22 @@
           <% end %>
         <% end %>
       </li>
+      <% if user_signed_in? %>
+        <li>
+          <% unread_count = current_user.notifications.unread.count %>
+          <%= link_to notifications_path, class: "flex items-center px-4 lg:px-6 py-2 lg:py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-400 transition-colors rounded-md relative" do %>
+            <svg class="w-5 lg:w-6 text-base lg:text-lg mr-3 lg:mr-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+            </svg>
+            <span class="text-sm lg:text-base">Notifications</span>
+            <% if unread_count > 0 %>
+              <span class="absolute top-1 right-1 text-[10px] lg:text-xs font-semibold px-1.5 py-0.5 rounded-full bg-red-600 text-white leading-tight">
+                <%= unread_count %>
+              </span>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
       <% if current_user %>
         <li>
           <%= link_to profile_path, class: "flex items-center px-4 lg:px-6 py-2 lg:py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-400  transition-colors rounded-md" do %>

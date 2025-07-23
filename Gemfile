@@ -74,4 +74,5 @@ end
 
 gem "kaminari"
 gem "rmagick"
-gem 'redis'
+gem "redis"
+gem "noticed", "~> 1.6"
