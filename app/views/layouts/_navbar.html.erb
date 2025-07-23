@@ -168,6 +168,18 @@
               <i class="fas fa-cog w-5 text-base mr-3"></i>
               <span class="text-sm">Settings</span>
             <% end %>
+            
+            <%= link_to blocked_users_path, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" do %>
+              <svg class="w-4 h-4 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
+              </svg>
+              Blocked Users
+              <% if current_user.blocked_users.any? %>
+                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                  <%= current_user.blocked_users.count %>
+                </span>
+              <% end %>
+            <% end %>
 
           <div class="py-2 hover:bg-gray-700 dark:hover:bg-gray-400">
             <button data-controller="theme" data-action="click->theme#toggle" data-theme-toggle

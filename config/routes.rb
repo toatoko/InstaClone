@@ -42,6 +42,11 @@ Rails.application.routes.draw do
       end
       resources :reports, only: [ :index ], controller: "reports"
     end
+
+    # Admin::BansController - Keep this for admin bans
+    resources :users, param: :username, only: [] do
+      resource :ban, controller: "bans", only: [ :create, :destroy ]
+    end
   end
 
   # Posts & Comments
@@ -52,8 +57,15 @@ Rails.application.routes.draw do
     end
   end
 
+  # Blocked Users Management
+  get "/blocked_users", to: "blocks#index", as: "blocked_users"
+
   # Users and Profiles
   devise_for :users
+  resources :users, param: :username, only: [] do
+    resource :block, controller: "blocks", only: [ :create, :destroy ]     # User blocking
+  end
+
   get "/dashboard", to: "users#index"
   get "/profile(/:username)", to: "users#profile", as: :profile
   get "/users/:username",     to: "users#show", as: :user_profile

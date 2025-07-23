@@ -85,4 +85,10 @@ class MessagesController < ApplicationController
                 .where(sender: @receiver, read_at: nil)
                 .update_all(read_at: Time.current)
   end
+
+  def can_message_user?(user)
+    return false if user.banned? && !current_user.admin?
+    return false if current_user.banned?
+    true
+  end
 end

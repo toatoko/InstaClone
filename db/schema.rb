@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_153956) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_224511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_153956) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "blocks", force: :cascade do |t|
+    t.bigint "blocker_id", null: false
+    t.bigint "blocked_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_id", "blocker_id"], name: "index_blocks_on_blocked_id_and_blocker_id"
+    t.index ["blocked_id"], name: "index_blocks_on_blocked_id"
+    t.index ["blocker_id", "blocked_id"], name: "index_blocks_on_blocker_id_and_blocked_id", unique: true
+    t.index ["blocker_id"], name: "index_blocks_on_blocker_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -137,6 +148,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_153956) do
     t.integer "followers_count", default: 0, null: false
     t.integer "following_count", default: 0, null: false
     t.boolean "admin", default: false, null: false
+    t.datetime "banned_at"
+    t.integer "banned_by_id"
+    t.text "ban_reason"
+    t.index ["banned_at"], name: "index_users_on_banned_at"
+    t.index ["banned_by_id"], name: "index_users_on_banned_by_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["followers_count"], name: "index_users_on_followers_count"
     t.index ["following_count"], name: "index_users_on_following_count"
@@ -147,6 +163,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_153956) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "blocks", "users", column: "blocked_id"
+  add_foreign_key "blocks", "users", column: "blocker_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
   add_foreign_key "likes", "posts"
@@ -157,4 +175,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_153956) do
   add_foreign_key "relationships", "users", column: "follower_id"
   add_foreign_key "reports", "users", column: "reporter_id"
   add_foreign_key "reports", "users", column: "resolved_by_id"
+  add_foreign_key "users", "users", column: "banned_by_id"
 end

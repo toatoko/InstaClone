@@ -3,12 +3,35 @@ class UsersController < ApplicationController
   before_action :set_user, only: [ :show, :follow, :unfollow ]
 
   def index
-    @user = User.includes(:avatar_attachment)
-    @posts = Post.includes([ :image_attachment, user: [ :avatar_attachment ] ])
-                 .where(active: true)
-                 .order(created_at: :desc)
-                 .page(params[:page]).per(12)
-    @suggested_users = User.all_except(current_user).includes(:avatar_attachment).limit(4)
+    @user = current_user
+
+    if current_user
+      # Eager load the blocked user associations to avoid N+1 queries
+      current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
+
+      # Use the associations instead of direct pluck queries
+      blocked_user_ids = current_user_with_blocks.blocked_users.pluck(:id)
+      blocked_by_user_ids = current_user_with_blocks.blocked_by_users.pluck(:id)
+      excluded_user_ids = (blocked_user_ids + blocked_by_user_ids).uniq
+    else
+      excluded_user_ids = []
+    end
+
+    @posts = Post.joins(:user)
+               .where(users: { banned_at: nil }) # Filter banned users
+               .where.not(user_id: excluded_user_ids) # Filter blocked users
+               .includes([ :image_attachment, user: [ :avatar_attachment ] ])
+               .where(active: true)
+               .order(created_at: :desc)
+               .page(params[:page]).per(12)
+
+    # Filter suggested users to exclude blocked users - with eager loading
+    @suggested_users = User.active
+                         .all_except(current_user)
+                         .where.not(id: excluded_user_ids)
+                         .includes(:avatar_attachment)
+                         .limit(4)
+
     respond_to do |format|
       format.html
       format.json { render json: { posts: render_posts_json(@posts), has_more: @posts.next_page.present? } }
@@ -28,40 +51,90 @@ class UsersController < ApplicationController
       @user = current_user
     end
 
+    # Check if the user's content should be visible
+    if current_user && @user != current_user && !@user.content_visible_to?(current_user)
+      redirect_to root_path, alert: "This profile is not available."
+      return
+    end
+
     @posts = @user.posts.includes(:image_attachment)
                   .where(active: true)
                   .order(created_at: :desc)
-    @is_following = current_user.present? && current_user != @user && current_user.following.exists?(id: @user.id)
+
+    # Eager load current_user's blocked associations for the checks below
+    if current_user.present?
+      current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
+      @is_following = current_user != @user && current_user.following.exists?(id: @user.id)
+      @is_blocked = current_user_with_blocks.blocked?(@user)
+      @blocked_by = current_user_with_blocks.blocked_by?(@user)
+    else
+      @is_following = false
+      @is_blocked = false
+      @blocked_by = false
+    end
   end
 
   def show
-    # This method uses set_user callback, so @user is already set
+    # Check if the user's content should be visible
+    if current_user && @user != current_user && !@user.content_visible_to?(current_user)
+      redirect_to root_path, alert: "This profile is not available."
+      return
+    end
+
     @posts = @user.posts.includes(:image_attachment)
                   .where(active: true)
                   .order(created_at: :desc)
-    @is_following = current_user.present? && current_user != @user && current_user.following.exists?(id: @user.id)
+
+    # Eager load current_user's blocked associations for the checks below
+    if current_user.present?
+      current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
+      @is_following = current_user != @user && current_user.following.exists?(id: @user.id)
+      @is_blocked = current_user_with_blocks.blocked?(@user)
+      @blocked_by = current_user_with_blocks.blocked_by?(@user)
+    else
+      @is_following = false
+      @is_blocked = false
+      @blocked_by = false
+    end
+
     render :profile
   end
 
   def all_users
-    @users = User.includes(:avatar_attachment).all_except(current_user)
+    # Eager load blocked associations for the current user and all users
+    @users = User.visible_to(current_user)
+                 .includes(:avatar_attachment)
+                 .all_except(current_user)
+
+    # Preload current user's blocked associations if signed in
+    if current_user
+      User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
+    end
   end
 
   def follow
+    # Eager load to avoid N+1 when checking mutually_blocked?
+    current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
+
+    if current_user_with_blocks.mutually_blocked?(@user)
+      redirect_back fallback_location: root_path, alert: "Cannot follow this user."
+      return
+    end
+
     current_user.follow(@user)
     respond_to do |format|
       format.turbo_stream do
         # Check if we're on the all_users page
-        if request.referer&.include?('suggested_followers')
+        if request.referer&.include?("suggested_followers")
           render turbo_stream: turbo_stream.replace("follow_button_#{@user.id}",
             partial: "users/follow_button_all_users",
             locals: { user: @user },
-            formats: [:html])
+            formats: [ :html ])
         else
-          render turbo_stream: turbo_stream.replace("user_#{@user.id}", 
-            partial: "users/suggested_user", 
+          render turbo_stream: turbo_stream.replace("user_#{@user.id}",
+            partial: "users/suggested_user",
             locals: { user: @user },
-            formats: [:html])
+            formats: [ :html ])
         end
       end
       format.html { redirect_back fallback_location: profile_path(@user.username) }
@@ -73,19 +146,19 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         # Check if we're on the all_users page
-        if request.referer&.include?('suggested_followers')
+        if request.referer&.include?("suggested_followers")
           render turbo_stream: turbo_stream.replace("follow_button_#{@user.id}",
             partial: "users/follow_button_all_users",
             locals: { user: @user },
-            formats: [:html])
+            formats: [ :html ])
         else
-          render turbo_stream: turbo_stream.replace("user_#{@user.id}", 
-            partial: "users/suggested_user", 
+          render turbo_stream: turbo_stream.replace("user_#{@user.id}",
+            partial: "users/suggested_user",
             locals: { user: @user },
-            formats: [:html])
+            formats: [ :html ])
         end
       end
-      format.html { redirect_back fallback_location: profile_path(@user.username) }
+      format.html { redirect_back fallback_location: root_path }
     end
   end
 

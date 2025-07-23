@@ -31,27 +31,84 @@
               <%= render "users/follow_button" %>
               <%= link_to "Message", conversation_path(@user.username),
                 class: "inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
-
-              <% if user_signed_in? && current_user != @user %>
-                <button
-                  type="button"
-                  data-controller="report-button" <%# Attach the new controller %>
-                  data-action="click->report-button#triggerReportModal" <%# New action %>
-                  data-report-button-reportable-type-value="User" <%# Pass data as values %>
-                  data-report-button-reportable-id-value="<%= @user.id %>" <%# Pass data as values %>
-                  class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-yellow-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 dark:text-yellow-400 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600"
-                >
-                  Report User
-                </button>
-              <% end %>
             <% end %>
 
-            <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
-            </button>
+            <% if user_signed_in? && current_user != @user %>
+              <div class="relative" data-controller="dropdown">
+                <button type="button"
+                        class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                        data-action="click->dropdown#toggle"
+                        aria-expanded="false">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </button>
+
+                <div data-dropdown-target="menu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700">
+                  <div class="py-1">
+
+                    <!-- Regular user actions (only show if not blocked) -->
+                    <% unless @blocked_by || @is_blocked %>
+                      <button type="button"
+                              data-controller="report-button"
+                              data-action="click->report-button#triggerReportModal"
+                              data-report-button-reportable-type-value="User"
+                              data-report-button-reportable-id-value="<%= @user.id %>"
+                              class="w-full text-left px-4 py-2 text-sm text-yellow-700 dark:text-yellow-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Report User
+                      </button>
+                    <% end %>
+
+                    <!-- USER BLOCKING (any user can block any other user) -->
+                    <% if current_user && current_user != @user %>
+                      <% if @is_blocked %>
+                        <%= button_to "Unblock User", user_block_path(@user.username),
+                            method: :delete,
+                            data: { turbo_confirm: "Are you sure you want to unblock this user?" },
+                            class: "w-full text-left px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-700" %>
+                      <% elsif @blocked_by %>
+                        <div class="w-full text-left px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                          This user has blocked you
+                        </div>
+                      <% else %>
+                        <%= button_to "Block User", user_block_path(@user.username),
+                            method: :post,
+                            data: { turbo_confirm: "Are you sure you want to block this user? You won't see each other's content." },
+                            class: "w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700" %>
+                      <% end %>
+                    <% end %>
+
+                    <!-- ADMIN BAN FUNCTIONALITY (only admins can site-ban users) -->
+                    <% if current_user&.admin? && current_user != @user %>
+                      <hr class="my-1 border-gray-200 dark:border-gray-700">
+                      <div class="px-2 py-1">
+                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Admin Actions:</span>
+                      </div>
+                      
+                      <% if @user.banned? %>
+                        <div class="px-4 py-1 text-xs text-gray-500 dark:text-gray-400">
+                          Banned by: <%= @user.banned_by&.username %>
+                        </div>
+                        <%= button_to "Unban from Site", user_ban_path(@user.username),
+                            method: :delete,
+                            data: { turbo_confirm: "Are you sure you want to unban this user from the entire site?" },
+                            class: "w-full text-left px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700" %>
+                      <% else %>
+                        <%= button_to "Ban from Site", user_ban_path(@user.username),
+                            method: :post,
+                            data: { turbo_confirm: "Are you sure you want to ban this user from the entire site? They won't be able to log in." },
+                            class: "w-full text-left px-4 py-2 text-sm text-purple-600 dark:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-700" %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
           </div>
         </div>
 
