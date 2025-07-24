@@ -1,0 +1,47 @@
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Search Results for "<%= @query %>"</h1>
+
+  <!-- Users -->
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Users</h2>
+    <% if @users.any? %>
+      <ul class="space-y-4">
+        <% @users.each do |user| %>
+          <li class="flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 shadow rounded-xl">
+            <% if user.avatar.attached? %>
+              <%= image_tag user.avatar.variant(resize_to_fill: [48, 48]), class: "w-12 h-12 rounded-full object-cover" %>
+            <% else %>
+              <div class="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+            <% end %>
+            <div>
+              <div class="font-medium text-gray-900 dark:text-white"><%= user.username %></div>
+              <div class="text-sm text-gray-500 dark:text-gray-400"><%= user.email %></div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-gray-500 dark:text-gray-400">No users found.</p>
+    <% end %>
+  </div>
+
+  <!-- Posts -->
+  <div>
+    <h2 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Posts</h2>
+    <% if @posts.any? %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <% @posts.each do |post| %>
+          <div class="bg-white dark:bg-gray-800 shadow rounded-xl p-4">
+            <% if post.image.attached? %>
+              <%= image_tag post.image.variant(resize_to_limit: [400, 300]), class: "rounded-lg mb-2 w-full" %>
+            <% end %>
+            <p class="text-gray-700 dark:text-gray-300"><%= truncate(post.description, length: 120) %></p>
+            <p class="text-xs text-gray-500 mt-2">By <%= link_to post.user.username, user_profile_path(post.user.username), class: "hover:underline" %></p>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-gray-500 dark:text-gray-400">No posts found.</p>
+    <% end %>
+  </div>
+</div>

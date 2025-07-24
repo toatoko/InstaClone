@@ -92,6 +92,8 @@ Rails.application.routes.draw do
       delete :delete_all   # Delete all notifications
     end
   end
+  # Search
+  get "search", to: "search#index"
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 

@@ -8,7 +8,7 @@ class Post < ApplicationRecord
   has_many :likes, dependent: :destroy
 
   has_many :reports, as: :reportable, dependent: :destroy
-  
+
   validates :image, presence: true
   validates :user, presence: true
   scope :active, -> { where active: true }
@@ -16,7 +16,7 @@ class Post < ApplicationRecord
   def set_active
     self.active = true
   end
-  
+
   def liked_by?(user)
     return false unless user
     likes.exists?(user: user)
@@ -30,7 +30,7 @@ class Post < ApplicationRecord
       likes.count
     end
   end
-  
+
   def preview_comments(limit = 2)
     comments.includes(:user).recent.limit(limit)
   end
