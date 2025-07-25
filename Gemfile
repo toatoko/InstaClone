@@ -73,6 +73,5 @@ group :test do
 end
 
 gem "kaminari"
-gem "rmagick"
 gem "redis"
 gem "noticed", "~> 1.6"
