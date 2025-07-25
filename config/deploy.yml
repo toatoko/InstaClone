@@ -1,59 +1,50 @@
-# Name of your application. Used to uniquely configure containers.
 service: instaclone
 
-# Name of the container image.
 image: toatoko/instaclone
 
-# Deploy to these servers.
 servers:
   web:
     - 13.62.49.119
 
-# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
 proxy:
   ssl: true
   host: blog-test.website
-  app_port: 80 # Match the EXPOSE port in your Dockerfile
+  app_port: 80
   healthcheck:
     path: /up
     interval: 10
     timeout: 30
 
-# Credentials for your image host.
 registry:
   username: toatoko
   password:
     - KAMAL_REGISTRY_PASSWORD
 
-# Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
   secret:
     - RAILS_MASTER_KEY
   clear:
     DATABASE_URL: postgresql://postgres:monster.1@database-2.cnemy8sqwtiz.eu-north-1.rds.amazonaws.com:5432/postgres
-    SOLID_QUEUE_IN_PUMA: true
+  # Remove this if you run Solid Queue as a separate job role
+  # SOLID_QUEUE_IN_PUMA: true
 
-# Aliases are triggered with "bin/kamal <alias>".
-aliases:
-  console: app exec --interactive --reuse "bin/rails console"
-  shell: app exec --interactive --reuse "bash"
-  logs: app logs -f
-  dbc: app exec --interactive --reuse "bin/rails dbconsole"
-
-# Use a persistent storage volume for sqlite database files and local Active Storage files.
 volumes:
   - "insta_clone_storage:/rails/storage"
 
-# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
-# hitting 404 on in-flight requests.
 asset_path: /rails/public/assets
 
-# Configure the image builder.
 builder:
   arch: amd64
 
-# Use a different ssh user than root
 ssh:
   user: ubuntu
   keys:
     - /home/toko/Downloads/mamamia.pem
+
+roles:
+  web:
+    # Starts your Rails server (Puma)
+    cmd: bundle exec puma -C config/puma.rb
+  job:
+    # Starts Solid Queue worker separately from Puma
+    cmd: bin/rails solid_queue:start
