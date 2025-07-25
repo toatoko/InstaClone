@@ -2,12 +2,12 @@
 service: instaclone
 
 # Name of the container image.
-image: toatoko/instalone
+image: toatoko/instaclone
 
 # Deploy to these servers.
 servers:
   web:
-    - 51.20.95.48
+    - 13.62.49.119
   # job:
   #   hosts:
   #     - 192.168.0.1
