@@ -4,7 +4,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
-    @comments = @post.comments.includes(:user).recent
+    @comments = @post.comments.includes(user: [ :avatar_attachment ]).recent
     @comment = Comment.new if user_signed_in?
   end
 

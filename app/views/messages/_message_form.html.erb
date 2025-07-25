@@ -6,7 +6,7 @@
     <%= form.text_area :content,
       placeholder: "Message...",
       rows: 1,
-      class: "w-full px-4 py-2 bg-gray-100 rounded-3xl resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm placeholder-gray-500",
+      class: "w-full px-4 py-2 bg-gray-100 rounded-3xl text-black resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm placeholder-gray-500 border border-gray-300 ",
       data: {
         action: "keydown->message-form#handleKeydown input->message-form#autoResize",
         "message-form-target": "textarea"

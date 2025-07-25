@@ -5,7 +5,7 @@ import { Application } from "@hotwired/stimulus" // Import Application directly 
 const application = Application.start()
 
 // Configure Stimulus development experience
-application.debug = true // Keep this true for debugging
+application.debug = false // Keep this true for debugging
 window.Stimulus = application // Make the Stimulus application instance globally accessible
 
 // Import and register individual controllers explicitly

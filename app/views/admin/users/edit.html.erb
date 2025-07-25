@@ -1,4 +1,4 @@
-<%= render layout: "layouts/admin" do %>
+
   <div class="px-4 py-6 sm:px-0">
     <div class="mb-6">
       <%= link_to admin_user_path(@user), class: "inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" do %>
@@ -9,7 +9,7 @@
       <% end %>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Edit User</h1>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Update user information and settings</p>
@@ -44,12 +44,12 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label for="user_username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-              <%= form.text_field :username, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <%= form.text_field :username, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 border border-gray-300 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
             </div>
 
             <div>
               <label for="user_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-              <%= form.email_field :email, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+              <%= form.email_field :email, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 border border-gray-300 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
             </div>
           </div>
 
@@ -70,20 +70,19 @@
           <div>
             <label for="user_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">New Password</label>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Leave blank to keep current password</p>
-            <%= form.password_field :password, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            <%= form.password_field :password, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 border border-gray-300 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
           </div>
 
           <div>
             <label for="user_password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirm New Password</label>
-            <%= form.password_field :password_confirmation, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+            <%= form.password_field :password_confirmation, class: "mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 border border-gray-300 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
           </div>
 
           <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <%= link_to "Cancel", admin_user_path(@user), class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
-            <%= form.submit "Update User", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            <%= link_to "Cancel", admin_user_path(@user), class: "inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-700 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            <%= form.submit "Update User", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
           </div>
         <% end %>
       </div>
     </div>
   </div>
-<% end %>

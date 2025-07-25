@@ -1,6 +1,4 @@
 class LikeNotifier < ApplicationNotifier
-  deliver_by :database
-
   param :liker, :post
 
   def message

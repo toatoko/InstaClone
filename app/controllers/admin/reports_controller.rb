@@ -7,13 +7,20 @@ class Admin::ReportsController < ApplicationController
   def index
     if @reportable
       @reports = Report.where(reportable: @reportable)
-                      .includes(:reporter)
+                      .includes(:reporter, reportable: reportable_includes_for(@reportable))
                       .order(created_at: :desc)
       @reportable_type = @reportable.class.name.downcase
     else
-      @reports = Report.includes(:reporter, :resolved_by, :reportable)
-                      .order(created_at: :desc)
-      @reports = @reports.where(status: params[:status]) if params[:status].present?
+      # For mixed report types, include the most common associations
+      base_query = Report.includes(:reporter, reportable: [ :image_attachment ])
+                        .order(created_at: :desc)
+
+      # Only include resolved_by when we might actually need it
+      if params[:status].blank? || params[:status].in?([ "resolved", "dismissed" ])
+        base_query = base_query.includes(:resolved_by)
+      end
+
+      @reports = params[:status].present? ? base_query.where(status: params[:status]) : base_query
     end
   end
 
@@ -69,8 +76,22 @@ class Admin::ReportsController < ApplicationController
   end
 
   def set_report
-    @report = Report.find(params[:id])
+    @report = Report.includes(reportable: [ :image_attachment ]).find(params[:id])
     @reportable = @report.reportable
+  end
+
+  # Dynamic includes based on the specific reportable type
+  def reportable_includes_for(reportable)
+    case reportable
+    when Post
+      [ :image_attachment ]
+    when Comment
+      []
+    when User
+      [ :avatar_attachment ]
+    else
+      []
+    end
   end
 
   def ensure_admin!

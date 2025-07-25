@@ -5,11 +5,9 @@ export default class extends Controller {
     static values = { reportableType: String, reportableId: Number }
 
     connect() {
-        console.log("ReportButtonController connected for:", this.reportableTypeValue, this.reportableIdValue);
     }
 
     triggerReportModal() {
-        console.log("ReportButtonController: triggerReportModal called, dispatching event.");
         const event = new CustomEvent("report:open", {
             bubbles: true,
             cancelable: true,

@@ -1,5 +1,4 @@
 class CommentNotifier < ApplicationNotifier
-  deliver_by :database
 
   param :comment, :commenter, :post
 

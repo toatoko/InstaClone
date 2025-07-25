@@ -36,7 +36,7 @@
             <% if user_signed_in? && current_user != @user %>
               <div class="relative" data-controller="dropdown">
                 <button type="button"
-                        class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                        class="p-1.5 rounded text-black dark:text-white"
                         data-action="click->dropdown#toggle"
                         aria-expanded="false">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,12 +93,12 @@
                         <div class="px-4 py-1 text-xs text-gray-500 dark:text-gray-400">
                           Banned by: <%= @user.banned_by&.username %>
                         </div>
-                        <%= button_to "Unban from Site", user_ban_path(@user.username),
+                        <%= button_to "Unban from Site", admin_user_ban_path(@user.username),
                             method: :delete,
                             data: { turbo_confirm: "Are you sure you want to unban this user from the entire site?" },
                             class: "w-full text-left px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700" %>
                       <% else %>
-                        <%= button_to "Ban from Site", user_ban_path(@user.username),
+                        <%= button_to "Ban from Site", admin_user_ban_path(@user.username),
                             method: :post,
                             data: { turbo_confirm: "Are you sure you want to ban this user from the entire site? They won't be able to log in." },
                             class: "w-full text-left px-4 py-2 text-sm text-purple-600 dark:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-700" %>
@@ -166,7 +166,7 @@
   <% if @posts.any? %>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
       <% @posts.each do |post| %>
-        <div class="aspect-square bg-gray-200 dark:bg-gray-800 relative group cursor-pointer rounded-lg">
+        <div class="aspect-square bg-gray-200 dark:bg-gray-800 relative group cursor-pointer rounded-lg ">
           <%= link_to post_path(post), class: "block w-full h-full" do %>
             <% if post.image.attached? %>
               <%= image_tag post.image.variant(resize_to_fill: [400, 400]),
@@ -177,13 +177,13 @@
             <div class="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center">
               <div class="opacity-0 group-hover:opacity-100 flex items-center gap-6 text-white">
                 <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 " fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                   </svg>
                   <span class="text-sm font-semibold"><%= post.likes_count %></span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 " fill="currentColor" viewBox="0 0 24 24">
                     <path d="M21.99 4c0-1.1-.89-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
                   </svg>
                   <span class="text-sm font-semibold"><%= post.comments_count %></span>

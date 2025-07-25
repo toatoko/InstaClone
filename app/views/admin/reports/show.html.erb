@@ -1,5 +1,5 @@
 <% content_for :title, "Report ##{@report.id}" %>
-<%= render layout: "layouts/admin" do %>
+
   <div class="px-4 py-6 sm:px-0">
     <div class="border-4 border-dashed border-gray-200 dark:border-gray-700 rounded-lg p-8">
       <div class="mb-8 flex justify-between items-center">
@@ -8,18 +8,18 @@
         </h1>
         <span class="inline-flex items-center px-3 py-1 rounded-full text-lg font-medium
           <% if @report.status == 'pending' %>
-            bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200
+            bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-700
           <% elsif @report.status == 'resolved' %>
-            bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200
+            bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-700
           <% elsif @report.status == 'dismissed' %>
-            bg-gray-100 text-gray-800 dark:bg-gray-900/50 dark:text-gray-200
+            bg-gray-100 text-gray-800 dark:bg-white/50 dark:text-gray-700
           <% end %>">
           <%= @report.status.titleize %>
         </span>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Report Details</h3>
           <p class="text-gray-700 dark:text-gray-300 mb-2"><strong>Reported by:</strong> <%= @report.reporter.username || @report.reporter.email %></p>
           <p class="text-gray-700 dark:text-gray-300 mb-2"><strong>Reported on:</strong> <%= @report.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
@@ -33,13 +33,13 @@
           <% end %>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <div class="shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Reported Content</h3>
           <p class="text-gray-700 dark:text-gray-300 mb-2"><strong>Type:</strong> <%= @report.reportable_type %></p>
           <p class="text-gray-700 dark:text-gray-300 mb-2"><strong>ID:</strong> <%= @report.reportable_id %></p>
 
           <% if @reportable %>
-            <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600">
+            <div class="mt-4 p-4 rounded-md border border-gray-200 dark:border-gray-600">
               <% if @reportable.is_a?(Post) %>
                 <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Post Content:</h4>
                 <% if @reportable.image.attached? %>
@@ -68,15 +68,15 @@
         </div>
       </div>
 
-      <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+      <div class="shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Report Reason</h3>
-        <div class="prose dark:prose-invert max-w-none">
+        <div class="prose dark:prose-invert max-w-none text-gray-900 dark:text-white">
           <%= simple_format(@report.reason) %>
         </div>
       </div>
 
       <% if @report.status == 'pending' %>
-        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+        <div class="shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Actions</h3>
 
           <div class="flex flex-wrap gap-4">
@@ -87,13 +87,8 @@
 
             <% if @reportable %>
               <%= form_with url: resolve_admin_report_path(@report), method: :patch, local: true, class: "flex" do |f| %>
-                <%= f.hidden_field :action_type, value: 'warn_user' %>
-                <%= f.submit "Resolve & Warn User", class: "inline-flex w-full justify-center rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-yellow-500 sm:ml-3 sm:w-auto cursor-pointer" %>
-              <% end %>
-
-              <%= form_with url: resolve_admin_report_path(@report), method: :patch, local: true, class: "flex" do |f| %>
                 <%= f.hidden_field :action_type, value: 'delete_content' %>
-                <%= f.submit "Resolve & Delete Content",
+                <%= f.submit "Resolve & Delete User/Post",
                   class: "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto cursor-pointer",
                   data: { turbo_confirm: "Are you sure? This will permanently delete the reported content." } %>
               <% end %>
@@ -101,7 +96,7 @@
 
             <%= button_to "Dismiss Report", dismiss_admin_report_path(@report),
               method: :patch,
-              class: "inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto cursor-pointer",
+              class: "inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-700 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-black shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto cursor-pointer",
               data: { turbo_confirm: "Are you sure you want to dismiss this report?" } %>
           </div>
         </div>
@@ -112,4 +107,4 @@
       </div>
     </div>
   </div>
-<% end %>
+

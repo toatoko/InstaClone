@@ -42,7 +42,7 @@
       </div>
     <% end %>
 
-    <main class="pt-4 md:pt-8 pb-16 md:pb-0 md:pl-64 lg:pl-72">
+    <main class="pt-4 md:pt-8 pb-16 md:pb-0 <%= 'md:pl-64 lg:pl-72' if user_signed_in? %>">
       <%= render 'layouts/report_modal' %> <%# The modal is rendered here once %>
       <%= yield %>
     </main>

@@ -51,25 +51,19 @@ class User < ApplicationRecord
 
   # Optimized visible_to scope
   scope :visible_to, ->(user) {
-    scope = includes(:blocked_users, :blocked_by_users) # Always eager load
-
     if user&.admin?
-      scope.all # Admins can see everyone
+      all
     elsif user
-      # Get blocked user IDs efficiently
       blocked_ids = user.blocking_relationships.pluck(:blocked_id)
       blocked_by_ids = user.blocked_relationships.pluck(:blocker_id)
       excluded_ids = blocked_ids + blocked_by_ids
 
       # Regular users only see active users who haven't blocked them and they haven't blocked
-      scope.active.where.not(id: excluded_ids)
+      active.where.not(id: excluded_ids)
     else
-      scope.active # Non-logged in users see active users
+      active # Non-logged in users see active users
     end
   }
-
-  # New scope for efficient blocked user queries
-  scope :with_blocking_info, -> { includes(:blocked_users, :blocked_by_users, :blocking_relationships, :blocked_relationships) }
 
   # ADMIN METHODS
   def admin?
@@ -115,14 +109,13 @@ class User < ApplicationRecord
     banned? ? :banned : super
   end
 
-  # OPTIMIZED USER BLOCKING METHODS (peer-to-peer blocking)
+  # OPTIMIZED USER BLOCKING METHODS
   def block_user(user)
     return false if user == self
     return true if blocked?(user) # Already blocked
 
     begin
       blocked_users << user
-      # Clear the association cache to avoid stale data
       association(:blocked_users).reload if association(:blocked_users).loaded?
       true
     rescue => e
@@ -136,7 +129,6 @@ class User < ApplicationRecord
 
     begin
       blocked_users.delete(user)
-      # Clear the association cache to avoid stale data
       association(:blocked_users).reload if association(:blocked_users).loaded?
       true
     rescue => e
@@ -148,23 +140,13 @@ class User < ApplicationRecord
   # Optimized blocked? method
   def blocked?(user)
     return false if user.nil?
-    # Use association if loaded, otherwise query efficiently
-    if association(:blocked_users).loaded?
-      blocked_users.include?(user)
-    else
-      blocking_relationships.exists?(blocked_id: user.id)
-    end
+    blocking_relationships.exists?(blocked_id: user.id)
   end
 
   # Optimized blocked_by? method
   def blocked_by?(user)
     return false if user.nil?
-    # Use association if loaded, otherwise query efficiently
-    if association(:blocked_by_users).loaded?
-      blocked_by_users.include?(user)
-    else
-      blocked_relationships.exists?(blocker_id: user.id)
-    end
+    blocked_relationships.exists?(blocker_id: user.id)
   end
 
   def mutually_blocked?(user)
@@ -173,19 +155,11 @@ class User < ApplicationRecord
 
   # Efficient method to get blocked user IDs
   def blocked_user_ids
-    if association(:blocked_users).loaded?
-      blocked_users.map(&:id)
-    else
-      blocking_relationships.pluck(:blocked_id)
-    end
+    blocking_relationships.pluck(:blocked_id)
   end
 
   def blocked_by_user_ids
-    if association(:blocked_by_users).loaded?
-      blocked_by_users.map(&:id)
-    else
-      blocked_relationships.pluck(:blocker_id)
-    end
+    blocked_relationships.pluck(:blocker_id)
   end
 
   # Check if this user's content should be visible to another user
@@ -233,15 +207,18 @@ class User < ApplicationRecord
 
   def follow(other_user)
     return false if mutually_blocked?(other_user)
-    following << other_user unless following?(other_user)
+    return false if following?(other_user) # Prevent duplicates
+
+    active_relationships.create(followed: other_user)
   end
 
   def unfollow(other_user)
-    following.delete(other_user)
+    relationship = active_relationships.find_by(followed: other_user)
+    relationship&.destroy
   end
 
   def following?(other_user)
-    following.include?(other_user)
+    active_relationships.exists?(followed: other_user)
   end
 
   def posts_count

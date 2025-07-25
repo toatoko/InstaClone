@@ -6,31 +6,26 @@ class UsersController < ApplicationController
     @user = current_user
 
     if current_user
-      # Eager load the blocked user associations to avoid N+1 queries
-      current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
-
-      # Use the associations instead of direct pluck queries
-      blocked_user_ids = current_user_with_blocks.blocked_users.pluck(:id)
-      blocked_by_user_ids = current_user_with_blocks.blocked_by_users.pluck(:id)
+      blocked_user_ids = current_user.blocking_relationships.pluck(:blocked_id)
+      blocked_by_user_ids = current_user.blocked_relationships.pluck(:blocker_id)
       excluded_user_ids = (blocked_user_ids + blocked_by_user_ids).uniq
     else
       excluded_user_ids = []
     end
 
     @posts = Post.joins(:user)
-               .where(users: { banned_at: nil }) # Filter banned users
-               .where.not(user_id: excluded_user_ids) # Filter blocked users
-               .includes([ :image_attachment, user: [ :avatar_attachment ] ])
-               .where(active: true)
-               .order(created_at: :desc)
-               .page(params[:page]).per(12)
+      .where(users: { banned_at: nil })
+      .where.not(user_id: excluded_user_ids)
+      .includes([ :image_attachment, user: [ :avatar_attachment ] ])
+      .where(active: true)
+      .order(created_at: :desc)
+      .page(params[:page]).per(12)
 
-    # Filter suggested users to exclude blocked users - with eager loading
     @suggested_users = User.active
-                         .all_except(current_user)
-                         .where.not(id: excluded_user_ids)
-                         .includes(:avatar_attachment)
-                         .limit(4)
+      .all_except(current_user)
+      .where.not(id: excluded_user_ids)
+      .includes(:avatar_attachment)
+      .limit(4)
 
     respond_to do |format|
       format.html
@@ -61,12 +56,10 @@ class UsersController < ApplicationController
                   .where(active: true)
                   .order(created_at: :desc)
 
-    # Eager load current_user's blocked associations for the checks below
     if current_user.present?
-      current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
       @is_following = current_user != @user && current_user.following.exists?(id: @user.id)
-      @is_blocked = current_user_with_blocks.blocked?(@user)
-      @blocked_by = current_user_with_blocks.blocked_by?(@user)
+      @is_blocked = current_user.blocked?(@user)
+      @blocked_by = current_user.blocked_by?(@user)
     else
       @is_following = false
       @is_blocked = false
@@ -87,10 +80,9 @@ class UsersController < ApplicationController
 
     # Eager load current_user's blocked associations for the checks below
     if current_user.present?
-      current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
       @is_following = current_user != @user && current_user.following.exists?(id: @user.id)
-      @is_blocked = current_user_with_blocks.blocked?(@user)
-      @blocked_by = current_user_with_blocks.blocked_by?(@user)
+      @is_blocked = current_user.blocked?(@user)
+      @blocked_by = current_user.blocked_by?(@user)
     else
       @is_following = false
       @is_blocked = false
@@ -105,22 +97,14 @@ class UsersController < ApplicationController
     @users = User.visible_to(current_user)
                  .includes(:avatar_attachment)
                  .all_except(current_user)
-
-    # Preload current user's blocked associations if signed in
-    if current_user
-      User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
-    end
   end
 
   def follow
-    current_user_with_blocks = User.includes(:blocked_users, :blocked_by_users).find(current_user.id)
-
-    if current_user_with_blocks.mutually_blocked?(@user)
+    if current_user.mutually_blocked?(@user)
       redirect_back fallback_location: root_path, alert: "Cannot follow this user."
       return
     end
 
-    # FIXED: Pass the follower object instead of just username
     if current_user.follow(@user)
       FollowNotifier.with(follower: current_user, followed_user: @user).deliver_later(@user)
     end
@@ -147,7 +131,6 @@ class UsersController < ApplicationController
     current_user.unfollow(@user)
     respond_to do |format|
       format.turbo_stream do
-        # Check if we're on the all_users page
         if request.referer&.include?("suggested_followers")
           render turbo_stream: turbo_stream.replace("follow_button_#{@user.id}",
             partial: "users/follow_button_all_users",

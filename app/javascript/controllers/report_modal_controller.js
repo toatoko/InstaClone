@@ -5,7 +5,6 @@ export default class extends Controller {
     static targets = ["modal", "reportableType", "reportableId", "reason"]
 
     connect() {
-        console.log("ReportModalController connected!")
         this.boundHandleEscape = this.handleEscape.bind(this)
         document.addEventListener("keydown", this.boundHandleEscape)
 
@@ -19,7 +18,6 @@ export default class extends Controller {
     }
 
     openModalFromEvent(event) {
-        console.log("ReportModalController: openModalFromEvent triggered by custom event!");
         const { reportableType, reportableId } = event.detail;
 
         // Call the internal _showModal method with the extracted data
@@ -28,7 +26,6 @@ export default class extends Controller {
 
     // This method can be called directly by data-action if needed, or by openModalFromEvent
     open(event) {
-        console.log("ReportModalController: open method triggered!")
         event.preventDefault()
 
         // The parentDropdown logic should ideally be handled by the button's controller
@@ -41,7 +38,6 @@ export default class extends Controller {
                 const dropdownMenu = parentDropdown.querySelector('[data-dropdown-target="menu"]');
                 if (dropdownMenu) {
                     dropdownMenu.classList.add('hidden');
-                    console.log("Dropdown hidden!");
                 }
             }
         }
@@ -52,8 +48,6 @@ export default class extends Controller {
 
     // New private helper method to handle showing the modal and setting values
     _showModal(reportableType, reportableId) {
-        console.log("ReportModalController: _showModal called.");
-        console.log("Reportable Type:", reportableType, "Reportable ID:", reportableId);
 
         this.reportableTypeTarget.value = reportableType
         this.reportableIdTarget.value = reportableId
@@ -62,19 +56,16 @@ export default class extends Controller {
         this.modalTarget.classList.remove("hidden")
         this.modalTarget.setAttribute("aria-hidden", "false")
         this.modalTarget.focus()
-        console.log("Modal should be visible now. Checking for 'hidden' class removal.");
     }
 
 
     close() {
-        console.log("ReportModalController: close method triggered!")
         this.modalTarget.classList.add("hidden")
         this.modalTarget.setAttribute("aria-hidden", "true")
     }
 
     handleEscape(event) {
         if (event.key === "Escape" && !this.modalTarget.classList.contains("hidden")) {
-            console.log("Escape key pressed, closing modal.");
             this.close()
         }
     }

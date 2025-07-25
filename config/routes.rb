@@ -43,10 +43,12 @@ Rails.application.routes.draw do
       resources :reports, only: [ :index ], controller: "reports"
     end
 
-    # Admin::BansController - Keep this for admin bans
+    # Admin::BansController
     resources :users, param: :username, only: [] do
       resource :ban, controller: "bans", only: [ :create, :destroy ]
     end
+    # Admin::SearchController
+    resources :search, only: [ :index ]
   end
 
   # Posts & Comments

@@ -1,40 +1,35 @@
-<body class="gradient-bg">
-  
-  <div class="items-center flex flex-col flex-grow py-12 px-4 sm:px-6 lg:px-8 ">
-    <div class="max-w-md w-full space-y-8">
-            <!-- Logo and Header Section -->
-      <div class="text-center floating-animation">
+<div class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-sm text-white">
+     <!-- Logo and Header Section -->
+      <div class="text-center floating-animation mb-5">
         <img
             class="mx-auto h-25 w-auto drop-shadow-2xl"
             src="https://www.evmux.com/blog/wp-content/uploads/2023/12/instagram-copy-e1702584672389.png"
             alt="Instagram"/>
-        <h2 style="margin-top:1.5rem;text-align:center;font-size:1.875rem;font-weight:800;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,0.25);">
-            Forgot your password?
-        </h2>
-        <p class="mt-2 text-center text-sm text-white/80">
-            Or <%= link_to "Sign Up", new_user_registration_path, class:"text-yellow-500" %> Or <%= link_to "Login", new_user_session_path, class:"text-yellow-500" %>
-        </p>
       </div>
-              <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-                <%= render "devise/shared/error_messages", resource: resource %>
-          <div class="glass-effect rounded-3xl p-8 shadow-2xl">
-            <form class="mt-8 space-y-6"><br>                    
-              <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                  <%= f.label :email, class:"sr-only"  %>
-                  <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder:"Email address" ,
-                      class:"input-focus appearance-none rounded-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm transition-all duration-300 bg-white/90 backdrop-blur-sm" %>
-                </div>  
 
-              <%= render "devise/shared/links" %>
-                <div class="actions">
-                  <%= f.submit "Send me reset password instructions", style: "display:flex;justify-content:center;width:100%;padding:0.75rem 1rem;border:none;border-radius:0.75rem;font-size:0.875rem;font-weight:700;color:#ffffff;background-image:linear-gradient(to right,#8b5cf6,#ec4899,#f97316);transition:all 0.3s ease;position:relative;" %>
-                </div>
-              <% end %>
-
-              </div>
-            </form>
-          </div>
+    <!-- Forgot password form -->
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <div class="mb-4">
+          <%= f.text_field :login,
+            autofocus: true,
+            placeholder: "Enter your email",
+            maxlength: 75,
+            autocorrect: "off",
+            autocapitalize: "off",
+            class: "w-full px-4 py-3 border border-gray-300 rounded text-gray-300 placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" %>
+        </div>
+        <div class="mb-6">
+          <%= f.submit "Send reset instructions",  class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded transition-colors" %>
+        </div>
+    <% end %>
+    
+    <div class="text-center text-sm text-gray-400 space-x-2">
+      <%= link_to "Log in", new_user_session_path, class: "text-blue-600 hover:text-blue-700 text-sm transition-colors" %>
+      <span>|</span>
+      <%= link_to "Sign up", new_user_registration_path, class: "text-blue-600 hover:text-blue-700 text-sm transition-colors" %>
     </div>
   </div>
-</body>
+</div>
+

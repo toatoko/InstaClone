@@ -1,5 +1,4 @@
 class FollowNotifier < ApplicationNotifier
-  deliver_by :database
 
   param :follower, :followed_user
 

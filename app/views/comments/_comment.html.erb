@@ -1,17 +1,17 @@
-<div id="comment_<%= comment.id %>" class="flex items-start space-x-2 py-1">
+<div id="comment_<%= comment.id %>" class="flex items-start space-x-2 py-1 ">
   <% if comment.user.avatar.attached? %>
     <%= image_tag comment.user.avatar.variant(resize_to_fill: [24, 24]), 
         class: "w-6 h-6 rounded-full object-cover flex-shrink-0" %>
   <% else %>
-    <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+    <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ">
       <span class="text-gray-600 text-xs font-medium"><%= comment.user.username.first.upcase %></span>
     </div>
   <% end %>
   
-  <div class="flex-1 min-w-0">
+  <div class="flex-1 min-w-0 ">
     <div class="text-sm">
-      <span class="font-semibold text-gray-900"><%= comment.user.username %></span>
-      <span class="text-gray-800 ml-1"><%= comment.content %></span>
+      <span class="font-semibold text-black dark:text-white"><%= comment.user.username %></span>
+      <span class="text-black dark:text-white ml-1"><%= comment.content %></span>
     </div>
     
     <div class="flex items-center space-x-3 mt-1">
