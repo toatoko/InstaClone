@@ -12,5 +12,5 @@ test:
   database: instaclone_test
 
 production:
-  adapter: postgresql
-  encoding: unicode
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>

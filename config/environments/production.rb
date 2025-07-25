@@ -32,18 +32,33 @@ Rails.application.configure do
 
   # Skip http-to-https redirect for the default health check endpoint.
   # IMPORTANT: This allows Kamal health checks to work properly
-  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  config.ssl_options = { 
+    redirect: { exclude: ->(request) { request.path == "/up" } },
+    hsts: { subdomains: true, preload: true, expires: 1.year }
+  }
 
   # Allow health check endpoint without host verification
   # IMPORTANT: This prevents Rails from blocking Kamal's health check requests
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Configure hosts (replace with your actual domain)
+  config.hosts = [
+    "your-domain.com",              # Replace with your actual domain
+    /.*\.your-domain\.com/,         # Replace with your actual domain
+    ENV["SERVER_HOST"]              # This allows Kamal to work
+  ].compact
+
+  # Database configuration for better RDS performance
+  config.active_record.database_selector = { delay: 2.seconds }
+  config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
+  config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
   config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
 
   # Change to "debug" to log everything (including potentially personally-identifiable information!)
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+  config.log_level = :info
 
   # Prevent health checks from clogging up the logs.
   config.silence_healthcheck_path = "/up"
@@ -64,11 +79,11 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "blog-test.website" }
+  config.action_mailer.default_url_options = { host: "your-domain.com", protocol: "https" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
-  #   current_user.username : Rails.application.credentials.dig(:smtp, :current_user.username ),
+  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
   #   password: Rails.application.credentials.dig(:smtp, :password),
   #   address: "smtp.example.com",
   #   port: 587,
@@ -84,13 +99,4 @@ Rails.application.configure do
 
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
-
-  # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "blog-test.website",     # Allow requests from your domain
-  #   /.*\.blog-test\.website/ # Allow requests from subdomains
-  # ]
-  #
-  # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
