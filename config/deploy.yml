@@ -8,6 +8,7 @@ image: toatoko/instaclone
 servers:
   web:
     - 13.62.49.119
+  port: 80
   # job:
   #   hosts:
   #     - 192.168.0.1
