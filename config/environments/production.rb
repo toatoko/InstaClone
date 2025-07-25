@@ -43,8 +43,9 @@ Rails.application.configure do
 
   # Configure hosts (replace with your actual domain)
   config.hosts = [
-    "your-domain.com",              # Replace with your actual domain
-    /.*\.your-domain\.com/,         # Replace with your actual domain
+    "blog-test.website",            # Your actual domain
+    /.*\.blog-test\.website/,       # Subdomains of your domain
+    "13.60.9.221",                  # Your server IP
     ENV["SERVER_HOST"]              # This allows Kamal to work
   ].compact
 
@@ -79,7 +80,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "your-domain.com", protocol: "https" }
+  config.action_mailer.default_url_options = { host: "blog-test.website", protocol: "https" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
