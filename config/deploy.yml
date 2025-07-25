@@ -2,12 +2,12 @@
 service: insta_clone
 
 # Name of the container image.
-image: toatoko/insta_clone
+image: your-dockerhub-username/insta_clone
 
 # Deploy to these servers.
 servers:
   web:
-    - 13.60.9.221
+    - YOUR_EC2_INSTANCE_IP # Replace with your actual EC2 public IP
   # job:
   #   hosts:
   #     - YOUR_EC2_INSTANCE_IP
@@ -16,12 +16,12 @@ servers:
 # Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
 proxy:
   ssl: true
-  host: blog-test.website # Replace with your actual domain
+  host: your-domain.com # Replace with your actual domain
 
 # Credentials for your image host.
 registry:
   # Using Docker Hub (default)
-  username: toatoko
+  username: your-dockerhub-username # Replace with your Docker Hub username
   password:
     - KAMAL_REGISTRY_PASSWORD
 
@@ -58,10 +58,5 @@ asset_path: /rails/public/assets
 # Configure the image builder.
 builder:
   arch: amd64
-
-# Health check configuration
-healthcheck:
-  path: /up
-  port: 80
-  max_attempts: 7
-  interval: 20s
+# Health check configuration (configured in the main section)
+# Kamal uses /up endpoint by default for health checks
