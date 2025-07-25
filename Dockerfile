@@ -59,15 +59,21 @@ FROM base
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
+# Add bundler bin directory to PATH so 'rails' is found
+ENV PATH="/usr/local/bundle/bin:${PATH}"
+
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
+
 USER 1000:1000
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start server via Thruster by default, this can be overwritten at runtime
+# Expose port 80
 EXPOSE 80
-CMD ["rails", "server", "-b", "0.0.0.0", "-p", "80"]
+
+# Use bundle exec rails server to ensure correct gem environment
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "80"]
