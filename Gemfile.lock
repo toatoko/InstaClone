@@ -239,7 +239,6 @@ GEM
     noticed (1.6.3)
       http (>= 4.0.0)
       rails (>= 5.2.0)
-    observer (0.1.2)
     orm_adapter (0.5.0)
     ostruct (0.6.2)
     parallel (1.27.0)
@@ -247,7 +246,6 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
-    pkg-config (1.6.2)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -323,9 +321,6 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.4.1)
-    rmagick (6.1.1)
-      observer (~> 0.1)
-      pkg-config (~> 1.4)
     rubocop (1.78.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -466,7 +461,6 @@ DEPENDENCIES
   rack-mini-profiler
   rails (~> 8.0.2)
   redis
-  rmagick
   rubocop-rails-omakase
   selenium-webdriver
   solid_cable
