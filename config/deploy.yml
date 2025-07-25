@@ -1,8 +1,8 @@
 # Name of your application. Used to uniquely configure containers.
-service: InstaClone
+service: instaclone
 
 # Name of the container image.
-image: toatoko/InstaClone
+image: toatoko/instalone
 
 # Deploy to these servers.
 servers:
