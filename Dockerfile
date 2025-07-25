@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t blog_demo .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name blog_demo blog_demo
+# docker build -t insta_clone .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name insta_clone insta_clone
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -19,7 +19,6 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips libpq5 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
@@ -31,7 +30,7 @@ FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config && \
+    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
@@ -59,21 +58,15 @@ FROM base
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Add bundler bin directory to PATH so 'rails' is found
-ENV PATH="/usr/local/bundle/bin:${PATH}"
-
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
-
 USER 1000:1000
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Expose port 80
+# Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
-
-# Use bundle exec rails server to ensure correct gem environment
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "80"]
+CMD ["./bin/thrust", "./bin/rails", "server"]
