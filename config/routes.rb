@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # Health check
+  get "up", to: proc { [ 200, { "Content-Type" => "text/plain" }, [ "OK" ] ] }
+  get "health", to: proc { [ 200, { "Content-Type" => "application/json" }, [ '{"status":"ok"}' ] ] }
+
   # Public report creation
   resources :reports, only: [ :create ]
 
@@ -83,6 +87,7 @@ Rails.application.routes.draw do
   end
   get "messages/:username", to: "messages#show", as: "conversation"
   post "messages/:username", to: "messages#create"
+
   # Notifications
   resources :notifications, only: [ :index ] do
     member do
@@ -94,10 +99,9 @@ Rails.application.routes.draw do
       delete :delete_all   # Delete all notifications
     end
   end
+
   # Search
   get "search", to: "search#index"
-  # Health check
-  get "up" => "rails/health#show", as: :rails_health_check
 
   # Root
   root "users#index"
