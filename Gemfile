@@ -75,3 +75,4 @@ end
 gem "kaminari"
 gem "redis"
 gem "noticed", "~> 1.6"
+gem "kamal", require: false

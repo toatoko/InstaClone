@@ -32,7 +32,7 @@ Rails.application.configure do
 
   # Skip http-to-https redirect for the default health check endpoint.
   # IMPORTANT: This allows Kamal health checks to work properly
-  config.ssl_options = { 
+  config.ssl_options = {
     redirect: { exclude: ->(request) { request.path == "/up" } },
     hsts: { subdomains: true, preload: true, expires: 1.year }
   }
@@ -43,10 +43,11 @@ Rails.application.configure do
 
   # Configure hosts (replace with your actual domain)
   config.hosts = [
-    "blog-test.website",            # Your actual domain
-    /.*\.blog-test\.website/,       # Subdomains of your domain
-    "13.60.9.221",                  # Your server IP
-    ENV["SERVER_HOST"]              # This allows Kamal to work
+    "blog-test.website",
+    /.*\.blog-test\.website/,
+    "13.60.9.221",
+    ENV["SERVER_HOST"],
+    "instaclone-ppdt.onrender.com"
   ].compact
 
   # Database configuration for better RDS performance
