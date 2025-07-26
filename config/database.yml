@@ -12,5 +12,5 @@ test:
   database: instaclone_test
 
 production:
-  url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy" %>
+  url: <%= ENV["DATABASE_URL"] || "postgresql://dummy:dummy@localhost:5432/dummy_build_db" %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
