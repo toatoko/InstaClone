@@ -47,7 +47,8 @@ Rails.application.configure do
     /.*\.blog-test\.website/,
     "13.60.9.221",
     ENV["SERVER_HOST"],
-    "instaclone-ppdt.onrender.com"
+    "instaclone-ppdt.onrender.com",
+    "https://instaclone-production-a6e9.up.railway.app/"
   ].compact
 
   # Database configuration for better RDS performance
