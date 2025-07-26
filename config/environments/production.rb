@@ -52,9 +52,9 @@ Rails.application.configure do
   ].compact
 
   # Database configuration for better RDS performance
-  config.active_record.database_selector = { delay: 2.seconds }
-  config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
-  config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+  config.active_record.database_selector = nil
+  config.active_record.database_resolver = nil
+  config.active_record.database_resolver_context = nil
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
